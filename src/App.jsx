@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Layout from './pages/Layout'
 import HomePage from './pages/HomePage'
 import NoEncontradoPage from './pages/NoEncontradoPage'
 
