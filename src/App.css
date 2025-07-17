@@ -1,13 +1,11 @@
 @import url("assets/spectre-0.5.9/spectre.min.css");
+@import url("assets/spectre-0.5.9/spectre-icons.min.css");
 
-body {
+#root {
   display: flex;
   flex-direction: column;
 }
 
-header {
-  flex: 1;
-}
 main {
   flex: auto;
 }

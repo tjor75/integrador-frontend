@@ -1,0 +1,11 @@
+.login {
+    display: flex;
+    justify-content: center;
+}
+.login .card {
+    min-width: 500px;
+    height: fit-content;
+}
+.login .card h1 {
+    text-align: center;
+}
