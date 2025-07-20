@@ -9,7 +9,7 @@ export default function Header() {
     const { user } = useContext(GlobalContext);
 
     return (
-        <header className="navbar">
+        <header className="navbar bg-secondary container">
             <section className="navbar-section">
                 <NavLink className="navbar-brand mr-2" to="/">Eventos</NavLink>
                 <Navbar />
