@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { formatDatePeriodFromDateDuration } from "../../../helpers/date-helper.js";
+import "./EventCard.css";
 
 export default function EventCard({ event }) {
     return (
         <Link to={`/event/${event.id}`}>
             <div className="card event-card">
                 <div className="card-header">
-                    <p className="card-title h5">{event.name}</p>
+                    <p className="card-title h4">{event.name}</p>
                 </div>
                 <div className="card-body">
                     <div className="columns">
@@ -23,7 +24,12 @@ export default function EventCard({ event }) {
                             {event.location.name}
                         </p>
                     </div>
-                    <p>{event.description}</p>
+                    <p
+                        className="card-short-description"
+                        title={event.description}
+                    >
+                        {event.description}
+                    </p>
                 </div>
             </div>
         </Link>

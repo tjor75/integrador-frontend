@@ -1,17 +1,20 @@
 import { API_BASE_URL } from "../config/api-config.js";
 
-const getAllAsync = async (pageNumber) => {
+const getAllAsync = async (pageNumber, filters) => {
     const url = new URL(`${API_BASE_URL}/api/event`);
     let response;
 
-    url.searchParams.append('page_number', pageNumber);
+    url.searchParams.append("page_number",  pageNumber);
+    url.searchParams.append("name",         filters.name ?? "");
+    url.searchParams.append("start_date",   filters.startDate ?? "");
+    url.searchParams.append("tag",          filters.tag ?? "");
 
     response = await fetch(url.toString());
     if (!response.ok) {
         throw new Error(`Error fetching event: ${response.statusText}`);
     }
-    
-    return await response.json();
+
+    return response.json();
 };
 
 const getByIdAsync = async (id) => {
@@ -19,7 +22,7 @@ const getByIdAsync = async (id) => {
     if (!response.ok) {
         throw new Error(`Error fetching with ID ${id}: ${response.statusText}`);
     }
-    return await response.json();
+    return response.json();
 };
 
 const createAsync = async (entity) => {
@@ -33,7 +36,7 @@ const createAsync = async (entity) => {
     if (!response.ok) {
         throw new Error(`Error creating: ${response.statusText}`);
     }
-    return await response.json();
+    return response.json();
 };
 
 export { getAllAsync, getByIdAsync, createAsync };

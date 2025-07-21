@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
+import { GlobalContext } from "../../context/GlobalContext";
 import Navbar from "../UI/Navbar";
 import SearchBar from "../UI/SearchBar";
 import HeaderUser from "../UI/HeaderUser";
-import { GlobalContext } from "../../context/GlobalContext";
 
 export default function Header() {
     const { user } = useContext(GlobalContext);
@@ -31,5 +31,5 @@ export default function Header() {
                 }
             </section>
         </header>
-    )
+    );
 }
