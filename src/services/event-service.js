@@ -14,7 +14,7 @@ const getAllAsync = async (pageNumber, filters) => {
         throw new Error(`Error fetching event: ${response.statusText}`);
     }
 
-    return response.json();
+    return await response.json();
 };
 
 const getByIdAsync = async (id) => {
@@ -22,7 +22,7 @@ const getByIdAsync = async (id) => {
     if (!response.ok) {
         throw new Error(`Error fetching with ID ${id}: ${response.statusText}`);
     }
-    return response.json();
+    return await response.json();
 };
 
 const createAsync = async (entity) => {
@@ -33,10 +33,12 @@ const createAsync = async (entity) => {
         },
         body: JSON.stringify(entity)
     });
+
     if (!response.ok) {
         throw new Error(`Error creating: ${response.statusText}`);
     }
-    return response.json();
+
+    return await response.json();
 };
 
 export { getAllAsync, getByIdAsync, createAsync };

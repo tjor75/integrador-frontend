@@ -4,7 +4,7 @@ import "./EventCard.css";
 
 export default function EventCard({ event }) {
     return (
-        <Link to={`/event/${event.id}`}>
+        <Link to={`/event/${event.id}`} className="text-dark">
             <div className="card event-card">
                 <div className="card-header">
                     <p className="card-title h4">{event.name}</p>

@@ -4,9 +4,10 @@ import { GlobalContext } from "../../context/GlobalContext";
 import Navbar from "../UI/Navbar";
 import SearchBar from "../UI/SearchBar";
 import HeaderUser from "../UI/HeaderUser";
+import "./Header.css";
 
 export default function Header() {
-    const { user } = useContext(GlobalContext);
+    const { jwtToken, setJwtToken, currentUser, setCurrentUser } = useContext(GlobalContext);
 
     return (
         <header className="navbar bg-secondary container">
@@ -17,8 +18,11 @@ export default function Header() {
             <section className="navbar-section">
                 <SearchBar />
                 {
-                    user ?
-                    <HeaderUser user={user} />
+                    currentUser ?
+                    <HeaderUser
+                        user={currentUser}
+                        setJwtToken={setJwtToken}
+                        setCurrentUser={setCurrentUser} />
                     :
                     <>
                         <NavLink className="btn btn-primary" to="/signup">
