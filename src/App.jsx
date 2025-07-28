@@ -1,28 +1,41 @@
 import { useEffect, useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { GlobalContext } from './context/GlobalContext'
-import { getSavedJwtToken, saveJwtToken, getSavedCurrentUser, saveCurrentUser } from './services/user-service'
+import * as userService from './services/user-service'
 import Layout from './pages/Layout'
 import HomePage from './pages/HomePage'
 import NoEncontradoPage from './pages/NoEncontradoPage'
 import LoginPage from './pages/LoginPage'
+import SignupPage from './pages/SignupPage'
 import './App.css'
 
 function App() {
-    const [jwtToken, setJwtToken] = useState(getSavedJwtToken());
-    const [currentUser, setCurrentUser] = useState(getSavedCurrentUser());
+    const [jwtToken, setJwtToken] = useState(userService.getSavedJwtToken());
+    const [currentUser, setCurrentUser] = useState(userService.getSavedCurrentUser());
     
-    useEffect(() => saveJwtToken(jwtToken), [jwtToken]);
-    useEffect(() => saveCurrentUser(currentUser), [currentUser]);
-    
+    useEffect(() => {
+        if (jwtToken)
+            userService.getSavedJwtToken(jwtToken);
+        else
+            userService.removeSavedJwtToken();
+    }, [jwtToken]);
+
+    useEffect(() => {
+        if (currentUser)
+            userService.saveCurrentUser(currentUser);
+        else
+            userService.removeSavedCurrentUser();
+    }, [currentUser]);
+
     return (
         <GlobalContext.Provider value={{ jwtToken, setJwtToken, currentUser, setCurrentUser }}>
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Layout />}>
-                        <Route index          element={<HomePage />} />
-                        <Route path="/login"  element={<LoginPage />} />
-                        <Route path="*"       element={<NoEncontradoPage />} />
+                        <Route index           element={<HomePage />} />
+                        <Route path="/login"   element={<LoginPage />} />
+                        <Route path="/signup"  element={<SignupPage />} />
+                        <Route path="*"        element={<NoEncontradoPage />} />
                     </Route>
                 </Routes>
             </BrowserRouter>

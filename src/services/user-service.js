@@ -7,7 +7,7 @@ export const getSavedJwtToken = () => {
 export const saveJwtToken = (jwtToken) => {
     localStorage.setItem("jwtToken", jwtToken);
 };
-const removeSavedJwtToken = () => {
+export const removeSavedJwtToken = () => {
     localStorage.removeItem("jwtToken");
 };
 
@@ -25,10 +25,10 @@ export const getSavedCurrentUser = () => {
 
     return currentUser;
 };
-export const saveCurrentUser = (user) => {
-    localStorage.setItem("currentUser", JSON.stringify(user));
+export const saveCurrentUser = (currentUser) => {
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
 };
-const removeSavedCurrentUser = () => {
+export const removeSavedCurrentUser = () => {
     localStorage.removeItem("currentUser");
 };
 

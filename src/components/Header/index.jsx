@@ -26,10 +26,10 @@ export default function Header() {
                     :
                     <>
                         <NavLink className="btn btn-primary" to="/signup">
-                            Sign up
+                            Registrar
                         </NavLink>
                         <NavLink className="btn btn-link" to="/login">
-                            Log in
+                            Ingresar
                         </NavLink>
                     </>
                 }

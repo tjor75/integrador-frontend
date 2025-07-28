@@ -1,43 +1,59 @@
 import { useContext, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { GlobalContext } from "../../context/GlobalContext";
-import * as userService from "../../services/user-service.js";
-import "./LoginPage.css";
-//import { getEmailOrDefault } from "../../helpers/validator-helper.js";
+import * as userService from "../../services/user-service";
+import { getEmailOrDefault } from "../../helpers/validator-helper.js";
 
 export default function LoginPage() {
     const { setJwtToken, currentUser, setCurrentUser } = useContext(GlobalContext);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [validInputs, setValidInputs] = useState({
+        username: true,
+        password: true
+    });
 
-    /* const handleUsernameChange = async (event) => {
-        const username = getEmailOrDefault(event.target.value.trim().toLowerCase());
-        
-
-        setError(prevError => {
-            if (username) {
-                const newError = { ...prevError };
-                newError.username = username ? undefined : "Username is required";
-                return newError;
-            }
+    const validateUsername = (text) => {
+        const username = getEmailOrDefault(text, null);
+        const isValid = username !== null;
+        setValidInputs(prevValidInputs => {
+            const newValidInputs = { ...prevValidInputs };
+            newValidInputs.username = isValid;
+            return newValidInputs;
         });
+        return isValid;
+    };
+
+    const handleUsernameChange = async (event) => {
+        const username = event.target.value.trim().toLowerCase();
+        validateUsername(username);
+    };
+
+    const validatePassword = (password) => {
+        const isValid = password !== "" && password.length >= 3;
+        setValidInputs(prevValidInputs => {
+            const newValidInputs = { ...prevValidInputs };
+            newValidInputs.password = isValid;
+            return newValidInputs;
+        });
+        return isValid;
     };
 
     const handlePasswordChange = async (event) => {
         const password = event.target.value;
-        setError(prevError => {
-            const newError = { ...prevError };
-            newError.password = password ? undefined : "Password is required";
-            return newError;
-        });
-    }; */
+        validatePassword(password);
+    };
 
     const handleLogin = async (event) => {
-        //if (error.username || error.password) {
-            const username = event.target.username.value.trim().toLowerCase();
-            const password = event.target.password.value;
+        event.preventDefault();
 
-            event.preventDefault();
+        const username = event.target.username.value;
+        const password = event.target.password.value;
+
+        const validUsername = validateUsername(username);
+        const validPassword = validatePassword(password);
+
+        if (validUsername && validPassword) {
             setLoading(true);
 
             try {
@@ -47,15 +63,10 @@ export default function LoginPage() {
                 event.target.reset();
             } catch (err) {
                 setError(err.message);
-                /*setError(prevError => {
-                    const newError = { ...prevError };
-                    newError.message = err.message;
-                    return newError;
-                });*/
             } finally {
                 setLoading(false);
             }
-        //}
+        }
     };
 
 
@@ -64,7 +75,7 @@ export default function LoginPage() {
         currentUser ? (
             <Navigate to="/" replace />
         ) : (
-            <main className="login">
+            <main className="auth">
                 <form className="card" onSubmit={handleLogin}>
                     <h1 className="text-center">Ingresar</h1>
                     {error && (
@@ -72,7 +83,7 @@ export default function LoginPage() {
                             <b>Error:</b> {error}
                         </div>
                     )}
-                    <div className="form-group">
+                    <div className={validInputs.username ? "form-group" : "form-group has-error"}>
                         <label className="form-label" htmlFor="username">Username</label>
                         <input
                             className="form-input"
@@ -80,9 +91,10 @@ export default function LoginPage() {
                             id="username"
                             name="username"
                             placeholder="john.doe@example.com"
-                            required />
+                            onChange={handleUsernameChange} />
+                        {validInputs.username || <p className="form-input-hint">Debe ser un correo v&aacute;lido</p>}
                     </div>
-                    <div className="form-group">
+                    <div className={validInputs.password ? "form-group" : "form-group has-error"}>
                         <label className="form-label" htmlFor="password">Contrase&ntilde;a</label>
                         <input
                             className="form-input"
@@ -90,7 +102,8 @@ export default function LoginPage() {
                             id="password"
                             name="password"
                             placeholder="********"
-                            required />
+                            onChange={handlePasswordChange} />
+                        {validInputs.password || <p className="form-input-hint">Debe tener al menos 3 caracteres</p>}
                     </div>
                     <div className="text-center">
                         <button
@@ -99,7 +112,7 @@ export default function LoginPage() {
                             disabled={loading}>
                             Ingresar
                         </button>
-                        <p className="form-text">¿No tienes cuenta? <a href="/signup">Regístrate</a></p>
+                        <p className="form-text">&iquest;No tienes cuenta? <Link to="/signup">Reg&iacute;strate</Link></p>
                     </div>
                 </form>
             </main>
