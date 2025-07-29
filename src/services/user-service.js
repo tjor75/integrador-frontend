@@ -49,14 +49,30 @@ export const loginAsync = async (username, password) => {
 
     data = await response.json();
 
-    console.log(data.message)
-
     if (response.ok && data.success)
         jwtToken = data.token;
     else
         throw new Error(data.message);
 
     return jwtToken;
+};
+export const registerAsync = async (firstName, lastName, username, password) => {
+    const requestBody = { first_name: firstName, last_name: lastName, username, password };
+    let response;
+    let data;
+
+    response = await fetch(`${API_BASE_URL}/api/user/register`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestBody)
+    });
+
+    data = await response.text();
+
+    if (!response.ok)
+        throw new Error(data);
 };
 export const logoutAsync = async () => {
     removeSavedJwtToken();

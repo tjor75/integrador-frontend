@@ -44,20 +44,6 @@ main {
 .card-title { margin: 0; }
 
 
-.auth {
-  align-items: center;
-}
-.auth .card {
-  width: 100%;
-  margin: 1rem 3rem;
-  padding: 0.5rem;
-  height: fit-content;
-}
-.auth .card h1 {
-  text-align: center;
-}
-
-
 @keyframes skeleton-loading {
   0% {
     background-color: hsl(200, 20%, 80%);
@@ -71,10 +57,6 @@ main {
   .container {
     padding-left: 3rem;
     padding-right: 3rem;
-  }
-  .auth .card {
-    width: 500px;
-    margin: 1rem;
   }
 }
 @media screen and (min-width: 1024px) {

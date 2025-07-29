@@ -25,7 +25,7 @@ export default function Header() {
                         setCurrentUser={setCurrentUser} />
                     :
                     <>
-                        <NavLink className="btn btn-primary" to="/signup">
+                        <NavLink className="btn btn-primary" to="/register">
                             Registrar
                         </NavLink>
                         <NavLink className="btn btn-link" to="/login">
