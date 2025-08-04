@@ -1,0 +1,21 @@
+.search-bar > button {
+    display: none;
+}
+
+@media screen and (max-width: 840px) {
+    .search-bar > button {
+        display: inline-block;
+    }
+    .search-bar form {
+        display: none;
+    }
+    .search-bar:focus-within form {
+        display: inline-flex;
+        position: absolute;
+        left: 0;
+        right: 0;
+        padding: 0 3px;
+        width: 100%;
+        z-index: 1;
+    }
+}

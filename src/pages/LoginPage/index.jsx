@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { GlobalContext } from "../../context/GlobalContext";
 import * as userService from "../../services/user-service";
 import AuthForm from "../../components/AuthForm";
@@ -7,13 +7,14 @@ import EmailInput from "../../components/UI/EmailInput";
 import PasswordInput from "../../components/UI/PasswordInput";
 
 export default function LoginPage() {
-    const { setJwtToken, currentUser, setCurrentUser } = useContext(GlobalContext);
+    const { setJwtToken, currentUser, setCurrentUser, goBackAfterLogin, setGoBackAfterLogin } = useContext(GlobalContext);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [validInputs, setValidInputs] = useState({
         username: null,
         password: null
     });
+    const navigate = useNavigate();
 
     const handleLogin = async (event) => {
         const username = event.target.username.value.trim();
@@ -25,7 +26,11 @@ export default function LoginPage() {
                 const newJwtToken = await userService.loginAsync(username, password);
                 setJwtToken(newJwtToken);
                 setCurrentUser({ username });
-                event.target.reset();
+                await event.target.reset();
+                if (goBackAfterLogin) {
+                    navigate(-1);
+                    setGoBackAfterLogin(false);
+                } 
             } catch (err) {
                 setError(err.message);
             } finally {

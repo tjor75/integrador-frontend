@@ -1,32 +1,19 @@
+import Form from "../Form";
 import "./AuthForm.css";
 
 export default function AuthForm({ title, error, onSubmit, setValidInputs, children }) {    
-    const handleSubmit = (event) => {
-        event.preventDefault();
-
-        setValidInputs(prevValidInputs => {
-            const newValidInputs = { ...prevValidInputs };
-            for (const key of Object.keys(newValidInputs)) {
-                if (newValidInputs[key] === null)
-                    newValidInputs[key] = false;
-            }
-            return newValidInputs;
-        });
-
-        onSubmit(event);
-    };
     
     return (
         <main className="auth">
-            <form className="card" onSubmit={handleSubmit}>
-                <h1 className="text-center">{title}</h1>
-                {error && (
-                    <div className="toast toast-error text-center">
-                        <b>Error:</b> {error}
-                    </div>
-                )}
+            <Form
+                className="card"
+                title={title}
+                error={error}
+                onSubmit={onSubmit}
+                setValidInputs={setValidInputs}
+            >
                 {children}
-            </form>
+            </Form>
         </main>
     );
 }

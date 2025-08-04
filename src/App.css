@@ -17,6 +17,8 @@ h6, .h6 { font-size: .6rem; }
 
 p { margin: 0 0 .7rem; }
 
+.strong { font-weight: 600; }
+
 
 main {
   display: flex;
