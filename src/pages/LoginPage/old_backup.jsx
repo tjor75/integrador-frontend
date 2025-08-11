@@ -1,11 +1,11 @@
 import { useContext, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
-import { GlobalContext } from "../../context/GlobalContext.jsx";
+import { globalContext } from "../../context/GlobalContext.jsx";
 import * as userService from "../../services/user-service.js";
 import { getEmailOrDefault } from "../../helpers/validator-helper.js";
 
 export default function LoginPage() {
-    const { setJwtToken, currentUser, setCurrentUser } = useContext(GlobalContext);
+    const { setJwtToken, currentUser, setCurrentUser } = useContext(globalContext);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [validInputs, setValidInputs] = useState({

@@ -1,12 +1,12 @@
 import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { GlobalContext } from "../../context/GlobalContext";
+import { globalContext } from "../../context/GlobalContext";
 import * as eventService from "../../services/event-service.js";
 import EventList from "../../components/EventList";
 import Loading from "../../components/UI/Loading";
 
 export default function HomePage() {
-    const { currentUser } = useContext(GlobalContext);
+    const { currentUser } = useContext(globalContext);
     const navigate = useNavigate();
     const [featuredEvents, setFeaturedEvents] = useState([]);
     const [loading, setLoading] = useState(true);

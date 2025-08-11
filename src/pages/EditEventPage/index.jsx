@@ -1,18 +1,18 @@
 import { useContext, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { GlobalContext } from "../../context/GlobalContext";
+import { globalContext } from "../../context/GlobalContext";
 import Form from "../../components/Form";
 import TextInput from "../../components/UI/TextInput";
 import TextAreaInput from "../../components/UI/TextAreaInput";
 import NumberInput from "../../components/UI/NumberInput";
-import DateTimeInput from "../../components/UI/DateTimeInput";
+import DateInput from "../../components/UI/DateInput";
 import EventLocationInput from "../../components/UI/EventLocationInput";
 import * as eventService from "../../services/event-service.js";
 import Loading from "../../components/UI/Loading";
 import NoEncontradoPage from "../NoEncontradoPage";
 
 export default function EditEventPage() {
-    const { currentUser } = useContext(GlobalContext);
+    const { currentUser } = useContext(globalContext);
     const navigate = useNavigate();
     const { id } = useParams();
     const [event, setEvent] = useState(null);
@@ -104,126 +104,128 @@ export default function EditEventPage() {
     }
 
     return (
-        <main className="container">
-            <div className="columns">
-                <div className="column col-8 col-md-12 col-mx-auto">
-                    <Form 
-                        title="Editar Evento" 
-                        error={error} 
-                        onSubmit={handleSubmit}
-                        setValidInputs={setValidInputs}
-                    >
-                        <TextInput
-                            name="name"
-                            title="Nombre del evento *"
-                            placeholder="Ej: Festival de Rock 2024"
-                            defaultValue={event.name}
-                            validInputs={validInputs}
+        currentUser && (
+            <main className="container">
+                <div className="columns">
+                    <div className="column col-8 col-md-12 col-mx-auto">
+                        <Form 
+                            title="Editar Evento" 
+                            error={error} 
+                            onSubmit={handleSubmit}
                             setValidInputs={setValidInputs}
-                            required
-                        />
+                        >
+                            <TextInput
+                                name="name"
+                                title="Nombre del evento *"
+                                placeholder="Ej: Festival de Rock 2024"
+                                defaultValue={event.name}
+                                validInputs={validInputs}
+                                setValidInputs={setValidInputs}
+                                required
+                            />
 
-                        <TextAreaInput
-                            name="description"
-                            title="Descripción *"
-                            placeholder="Describe tu evento. ¿Qué harás? ¿Por qué deberían asistir?"
-                            defaultValue={event.description}
-                            validInputs={validInputs}
-                            setValidInputs={setValidInputs}
-                            required
-                        />
+                            <TextAreaInput
+                                name="description"
+                                title="Descripción *"
+                                placeholder="Describe tu evento. ¿Qué harás? ¿Por qué deberían asistir?"
+                                defaultValue={event.description}
+                                validInputs={validInputs}
+                                setValidInputs={setValidInputs}
+                                required
+                            />
 
-                        <div className="columns">
-                            <div className="column col-6 col-md-12">
-                                <DateTimeInput
-                                    name="startDate"
-                                    title="Fecha y hora de inicio *"
-                                    defaultValue={formatDateForInput(event.start_date)}
-                                    validInputs={validInputs}
-                                    setValidInputs={setValidInputs}
-                                    required
-                                />
-                            </div>
-                            <div className="column col-6 col-md-12">
-                                <NumberInput
-                                    name="duration"
-                                    title="Duración (minutos) *"
-                                    placeholder="120"
-                                    min={15}
-                                    max={1}
-                                    defaultValue={event.duration_minutes}
-                                    validInputs={validInputs}
-                                    setValidInputs={setValidInputs}
-                                    required
-                                />
-                            </div>
-                        </div>
-
-                        <EventLocationInput
-                            name="eventLocation"
-                            title="Ubicación del evento *"
-                            defaultValue={event.event_location ? event.event_location.name : ""}
-                            validInputs={validInputs}
-                            setValidInputs={setValidInputs}
-                            required
-                        />
-
-                        <div className="columns">
-                            <div className="column col-6 col-md-12">
-                                <NumberInput
-                                    name="maxAttendees"
-                                    title="Máximo de asistentes"
-                                    placeholder="50"
-                                    min={1}
-                                    max={1000}
-                                    defaultValue={event.max_attendees || ""}
-                                    validInputs={validInputs}
-                                    setValidInputs={setValidInputs}
-                                />
-                            </div>
-                            <div className="column col-6 col-md-12">
-                                <TextInput
-                                    name="tags"
-                                    title="Etiquetas (separadas por comas)"
-                                    placeholder="música, rock, festival, al aire libre"
-                                    defaultValue={event.tags ? event.tags.map(tag => tag.name).join(", ") : ""}
-                                    validInputs={validInputs}
-                                    setValidInputs={setValidInputs}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="form-group">
                             <div className="columns">
                                 <div className="column col-6 col-md-12">
-                                    <button 
-                                        type="button" 
-                                        className="btn btn-outline btn-lg col-12"
-                                        onClick={() => navigate(`/event/${id}`)}
-                                    >
-                                        Cancelar
-                                    </button>
+                                    <DateInput
+                                        name="startDate"
+                                        title="Fecha *"
+                                        defaultValue={formatDateForInput(event.start_date)}
+                                        validInputs={validInputs}
+                                        setValidInputs={setValidInputs}
+                                        required
+                                    />
                                 </div>
                                 <div className="column col-6 col-md-12">
-                                    <button 
-                                        type="submit" 
-                                        className="btn btn-primary btn-lg col-12"
-                                        disabled={saving}
-                                    >
-                                        {saving ? "Guardando..." : "Guardar Cambios"}
-                                    </button>
+                                    <NumberInput
+                                        name="duration"
+                                        title="Duración (minutos) *"
+                                        placeholder="120"
+                                        min={15}
+                                        max={1}
+                                        defaultValue={event.duration_minutes}
+                                        validInputs={validInputs}
+                                        setValidInputs={setValidInputs}
+                                        required
+                                    />
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="text-center">
-                            <small className="text-gray">
-                                * Campos obligatorios
-                            </small>
-                        </div>
-                    </Form>
+                            <EventLocationInput
+                                name="eventLocation"
+                                title="Ubicación del evento *"
+                                defaultValue={event.event_location ? event.event_location.name : ""}
+                                validInputs={validInputs}
+                                setValidInputs={setValidInputs}
+                                required
+                            />
+
+                            <div className="columns">
+                                <div className="column col-6 col-md-12">
+                                    <NumberInput
+                                        name="maxAttendees"
+                                        title="Máximo de asistentes"
+                                        placeholder="50"
+                                        min={1}
+                                        max={1000}
+                                        defaultValue={event.max_attendees || ""}
+                                        validInputs={validInputs}
+                                        setValidInputs={setValidInputs}
+                                    />
+                                </div>
+                                <div className="column col-6 col-md-12">
+                                    <TextInput
+                                        name="tags"
+                                        title="Etiquetas (separadas por comas)"
+                                        placeholder="música, rock, festival, al aire libre"
+                                        defaultValue={event.tags ? event.tags.map(tag => tag.name).join(", ") : ""}
+                                        validInputs={validInputs}
+                                        setValidInputs={setValidInputs}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="form-group">
+                                <div className="columns">
+                                    <div className="column col-6 col-md-12">
+                                        <button 
+                                            type="button" 
+                                            className="btn btn-outline btn-lg col-12"
+                                            onClick={() => navigate(`/event/${id}`)}
+                                        >
+                                            Cancelar
+                                        </button>
+                                    </div>
+                                    <div className="column col-6 col-md-12">
+                                        <button 
+                                            type="submit" 
+                                            className="btn btn-primary btn-lg col-12"
+                                            disabled={saving}
+                                        >
+                                            {saving ? "Guardando..." : "Guardar Cambios"}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="text-center">
+                                <small className="text-gray">
+                                    * Campos obligatorios
+                                </small>
+                            </div>
+                        </Form>
+                    </div>
                 </div>
-            </div>
-        </main>
+            </main>
+        )
     );
 }

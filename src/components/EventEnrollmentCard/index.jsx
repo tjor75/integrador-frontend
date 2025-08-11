@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { GlobalContext } from "../../context/GlobalContext";
+import { globalContext } from "../../context/GlobalContext";
 
 export default function EventEnrollmentCard({ event }) {
-    const { jwtToken, currentUser } = useContext(GlobalContext);
+    const { jwtToken, currentUser } = useContext(globalContext);
     const enabledForEnrollment = event.enabled_for_enrollment === "1";
 
     const enroll = async () => {

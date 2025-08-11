@@ -1,16 +1,16 @@
 import { useContext, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { GlobalContext } from "../../context/GlobalContext";
+import { globalContext } from "../../context/GlobalContext";
 import Form from "../../components/Form";
 import TextInput from "../../components/UI/TextInput";
 import TextAreaInput from "../../components/UI/TextAreaInput";
 import NumberInput from "../../components/UI/NumberInput";
-import DateTimeInput from "../../components/UI/DateTimeInput";
+import DateInput from "../../components/UI/DateInput";
 import EventLocationInput from "../../components/UI/EventLocationInput";
 import * as eventService from "../../services/event-service.js";
 
 export default function CreateEventPage() {
-    const { currentUser } = useContext(GlobalContext);
+    const { currentUser } = useContext(globalContext);
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -89,9 +89,9 @@ export default function CreateEventPage() {
 
                             <div className="columns">
                                 <div className="column col-6 col-md-12">
-                                    <DateTimeInput
+                                    <DateInput
                                         name="startDate"
-                                        title="Fecha y hora de inicio"
+                                        title="Fecha"
                                         validInputs={validInputs}
                                         setValidInputs={setValidInputs}
                                         required

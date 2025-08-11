@@ -3,13 +3,13 @@
 }
 
 @media screen and (max-width: 840px) {
-    header .search-bar > button {
+    .search-bar > button {
         display: inline-block;
     }
-    header .search-bar form {
+    .search-bar form {
         display: none;
     }
-    header .search-bar:focus-within form {
+    .search-bar:focus-within form {
         display: inline-flex;
         position: absolute;
         left: 0;

@@ -1,4 +1,4 @@
-export default function DateTimeInput({ 
+export default function DateInput({ 
     name, 
     title, 
     validInputs, 
@@ -6,7 +6,7 @@ export default function DateTimeInput({
     required = false,
     defaultValue = ""
 }) {
-    const validateDateTime = (value) => {
+    const validateDate = (value) => {
         let isValid = true;
         
         if (required && value === "") {
@@ -21,9 +21,9 @@ export default function DateTimeInput({
         return isValid;
     };
 
-    const handleDateTimeChange = async (event) => {
+    const handleDateChange = async (event) => {
         const value = event.target.value;
-        validateDateTime(value);
+        validateDate(value);
     };
     
     return (
@@ -33,12 +33,11 @@ export default function DateTimeInput({
             </label>
             <input
                 className="form-input"
-                type="datetime-local"
+                type="date"
                 id={name}
                 name={name}
                 defaultValue={defaultValue}
-                onChange={handleDateTimeChange}
-                required={required} />
+                onChange={handleDateChange} />
             {validInputs[name] === false && (
                 <p className="form-input-hint text-error">
                     Este campo es requerido

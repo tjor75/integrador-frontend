@@ -1,5 +1,6 @@
 import { useContext } from "react";
-import { GlobalContext } from "../../context/GlobalContext";
+import { globalContext } from "../../context/GlobalContext";
+import { Link } from "react-router-dom";
 import Gravatar from "../UI/Gravatar";
 import "./EventHeaderSection.css";
 
@@ -18,7 +19,7 @@ export default function EventHeaderSection({ event }) {
         </header>
     */
 
-    const { currentUser } = useContext(GlobalContext);
+    const { currentUser } = useContext(globalContext);
     const isEventCreator = currentUser && event && currentUser.id === event.creator_user.id;
 
     // Format price

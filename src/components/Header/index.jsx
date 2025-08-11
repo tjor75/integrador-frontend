@@ -1,12 +1,12 @@
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { GlobalContext } from "../../context/GlobalContext";
+import { globalContext } from "../../context/GlobalContext";
 import SearchBar from "../SearchBar";
 import HeaderUser from "../UI/HeaderUser";
 import "./Header.css";
 
 export default function Header() {
-    const { setJwtToken, currentUser, setCurrentUser } = useContext(GlobalContext);
+    const { setJwtToken, currentUser, setCurrentUser } = useContext(globalContext);
 
     return (
         <header className="navbar bg-secondary container">

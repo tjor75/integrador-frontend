@@ -16,7 +16,7 @@ export const getSavedCurrentUser = () => {
     const currentUserString = localStorage.getItem("currentUser");
     let currentUser = null;
 
-    if (!currentUserString)
+    if (currentUserString)
         try {
             currentUser = JSON.parse(currentUserString);
         } catch (error) {

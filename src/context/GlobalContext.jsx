@@ -1,7 +1,7 @@
 import { useEffect, useState, createContext } from "react";
 import * as userService from "../services/user-service";
 
-export const GlobalContext = createContext();
+export const globalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
     const [jwtToken, setJwtToken] = useState(userService.getSavedJwtToken());
@@ -10,7 +10,7 @@ export const GlobalProvider = ({ children }) => {
 
     useEffect(() => {
         if (jwtToken)
-            userService.getSavedJwtToken(jwtToken);
+            userService.saveJwtToken(jwtToken);
         else
             userService.removeSavedJwtToken();
     }, [jwtToken]);
@@ -23,8 +23,8 @@ export const GlobalProvider = ({ children }) => {
     }, [currentUser]);
 
     return (
-        <GlobalContext.Provider value={{ jwtToken, setJwtToken, currentUser, setCurrentUser, goBackAfterLogin, setGoBackAfterLogin }}>
+        <globalContext.Provider value={{ jwtToken, setJwtToken, currentUser, setCurrentUser, goBackAfterLogin, setGoBackAfterLogin }}>
             {children}
-        </GlobalContext.Provider>
+        </globalContext.Provider>
     );
 };
