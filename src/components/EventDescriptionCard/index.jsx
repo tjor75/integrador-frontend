@@ -4,7 +4,7 @@ export default function EventDescriptionCard({ description }) {
             <div className="card-header">
                 <div className="card-title h5">
                     <i className="icon icon-message mr-2"></i>
-                    Descripción
+                    Descripci&oacute;n
                 </div>
             </div>
             <div className="card-body">

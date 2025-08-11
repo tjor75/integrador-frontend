@@ -8,7 +8,7 @@ import SpinnerPage from "../SpinnerPage";
 import EventEnrollmentCard from "../../components/EventEnrollmentCard";
 import EventDescriptionCard from "../../components/EventDescriptionCard";
 import EventHeaderSection from "../../components/EventHeaderSection";
-import EventDetailsSection from "../../components/EventDetailsSection";
+import EventDateSection from "../../components/EventDateSection";
 
 
 import EventLocationCard from "../../components/LocationCard";
@@ -46,13 +46,13 @@ export default function EventPage() {
 
                     <div className="columns mt-2">
                         <div className="column col-8 col-md-12">
+                            <EventDateSection event={event} />
+                            <EventDescriptionCard description={event.description} />
                             <div className="card mb-2">
                                 {event.event_location && (
                                     <EventLocationCard event={event} />
                                 )}
                             </div>
-                            <EventDetailsSection event={event} />
-                            <EventDescriptionCard description={event.description} />
                             {event.tags && event.tags.length > 0 && <EventTagsCard tags={event.tags} />}
                         </div>
                         

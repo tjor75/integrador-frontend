@@ -4,6 +4,7 @@ import { globalContext } from "../../context/GlobalContext";
 import * as eventService from "../../services/event-service.js";
 import EventList from "../../components/EventList";
 import Loading from "../../components/UI/Loading";
+import "./HeroPage.css";
 
 export default function HomePage() {
     const { currentUser } = useContext(globalContext);
@@ -42,8 +43,8 @@ export default function HomePage() {
 
     return (
         <main>
-            {/* Hero Section */}
             <section className="hero hero-lg bg-primary">
+                <img className="hero-people" src="/img/hero-people.png" />
                 <div className="hero-body text-center">
                     <h1 className="hero-title">¡Encuentra y Crea Eventos Increíbles!</h1>
                     <p className="hero-subtitle">

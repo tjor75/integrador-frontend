@@ -7,6 +7,7 @@ import EventListSkeleton from "../../components/EventListSkeleton";
 import SearchBar from "../../components/SearchBar";
 import GoUpButton from "../../components/UI/GoUpButton";
 import Loading from "../../components/UI/Loading";
+import EmptyEventList from "../../components/UI/EmptyEventList/index.jsx";
 
 export default function EventsPage() {
     const [searchParams] = useSearchParams();
@@ -143,18 +144,8 @@ export default function EventsPage() {
             
             {/* Events List Section */}
             <div className="section">
-                {loading && events.length === 0 ? (
-                    <EventListSkeleton />
-                ) : (
-                    <EventList events={events} />
-                )}
-
-                {loading && events.length > 0 && (
-                    <div className="text-center">
-                        <Loading />
-                        <p className="text-gray">Cargando más eventos...</p>
-                    </div>
-                )}
+                {loading && events.length <= 0 || <EventList events={events} />}
+                {loading && <EventListSkeleton />}
 
                 {!loading && hasMoreEvents && (
                     <div className="text-center">
@@ -174,27 +165,6 @@ export default function EventsPage() {
                             <i className="icon icon-check text-success" style={{fontSize: '2rem'}}></i>
                             <h4>¡Has visto todos los eventos!</h4>
                             <p className="text-gray">No hay más eventos para mostrar.</p>
-                        </div>
-                    </div>
-                )}
-
-                {!loading && events.length === 0 && !error && (
-                    <div className="card bg-gray">
-                        <div className="card-body text-center">
-                            <i className="icon icon-emoji text-warning" style={{fontSize: '2rem'}}></i>
-                            <h4>No se encontraron eventos</h4>
-                            <p className="text-gray">
-                                No hay eventos que coincidan con los filtros aplicados.
-                                <br />
-                                Intenta cambiar los criterios de búsqueda.
-                            </p>
-                            <button 
-                                className="btn btn-primary" 
-                                onClick={clearAllFilters}
-                            >
-                                <i className="icon icon-refresh"></i>
-                                Ver todos los eventos
-                            </button>
                         </div>
                     </div>
                 )}

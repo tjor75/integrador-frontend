@@ -1,0 +1,11 @@
+.hero {
+    position: relative;
+}
+
+.hero-people {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    opacity: 50%;
+    width: 33.33%;
+}
