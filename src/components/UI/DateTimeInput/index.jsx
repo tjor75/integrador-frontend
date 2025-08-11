@@ -1,19 +1,15 @@
-export default function TextInput({ 
+export default function DateTimeInput({ 
     name, 
     title, 
-    placeholder, 
     validInputs, 
     setValidInputs, 
     required = false,
-    defaultValue = "",
-    min = 3
+    defaultValue = ""
 }) {
-    const validateText = (text) => {
+    const validateDateTime = (value) => {
         let isValid = true;
         
-        if (required && text === "") {
-            isValid = false;
-        } else if (text !== "" && text.length < min) {
+        if (required && value === "") {
             isValid = false;
         }
         
@@ -25,9 +21,9 @@ export default function TextInput({
         return isValid;
     };
 
-    const handleTextChange = async (event) => {
-        const text = event.target.value;
-        validateText(text);
+    const handleDateTimeChange = async (event) => {
+        const value = event.target.value;
+        validateDateTime(value);
     };
     
     return (
@@ -37,17 +33,15 @@ export default function TextInput({
             </label>
             <input
                 className="form-input"
-                type="text"
+                type="datetime-local"
                 id={name}
                 name={name}
-                placeholder={placeholder}
                 defaultValue={defaultValue}
-                onChange={handleTextChange}
+                onChange={handleDateTimeChange}
                 required={required} />
             {validInputs[name] === false && (
                 <p className="form-input-hint text-error">
-                    {required && "Este campo es requerido. "}
-                    Debe tener al menos {min} caracteres
+                    Este campo es requerido
                 </p>
             )}
         </div>

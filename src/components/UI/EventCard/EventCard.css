@@ -2,12 +2,111 @@ a:has(> .event-card):link {
     text-decoration: none;
 }
 
-.event-card .card-short-description {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    height: auto;
+.event-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e7e9ed;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.event-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-color: #5755d9;
+}
+
+.event-card .card-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 1px solid #e7e9ed;
+    padding: 1rem;
+}
+
+.event-card .card-title {
+    margin: 0;
+    color: #303742;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.event-card .card-body {
+    flex: 1;
+    padding: 1rem;
+}
+
+.event-card .card-description {
+    color: #5b657a;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.event-card .divider {
+    height: 1px;
+    background: #e7e9ed;
+    margin: 1rem 0;
+}
+
+.event-card .event-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.event-card .event-info i {
+    font-size: 0.9rem;
+    width: 16px;
+    text-align: center;
+}
+
+.event-card .event-info .text-small {
+    font-size: 0.8rem;
+    color: #5b657a;
+    font-weight: 500;
+}
+
+.event-card .card-footer {
+    background: #f8f9fa;
+    border-top: 1px solid #e7e9ed;
+    padding: 0.75rem 1rem;
+}
+
+.event-card .event-creator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.event-card .event-creator i {
+    font-size: 0.8rem;
+}
+
+.event-card .label {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    font-weight: 500;
+}
+
+.event-card .label-rounded {
+    border-radius: 12px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .event-card .card-header {
+        padding: 0.75rem;
+    }
+    
+    .event-card .card-body {
+        padding: 0.75rem;
+    }
+    
+    .event-card .card-footer {
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .event-card .event-info {
+        margin-bottom: 0.75rem;
+    }
 }

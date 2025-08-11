@@ -26,13 +26,13 @@ export default function SearchBar() {
         if (tag)        newParams.set("tag", tag);
         else            newParams.delete("tag");
 
-        navigate("/?" + newParams.toString());
-    }
+        navigate("/events?" + newParams.toString());
+    };
 
 
     return (
         <div className="search-bar">
-            <button className="btn btn-primary">
+            <button className="btn btn-link">
                 <i className="icon icon-search" />
             </button>
             <form className="input-group" onSubmit={handleSearch}>
@@ -43,8 +43,10 @@ export default function SearchBar() {
                     placeholder="Buscar"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    />
-                <button className="btn btn-primary input-group-btn">Search</button>
+                />
+                <button className="btn input-group-btn">
+                    <i className="icon icon-search" />
+                </button>
             </form>
         </div>
     )

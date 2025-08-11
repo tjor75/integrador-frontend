@@ -7,6 +7,22 @@
   min-height: 100vh;
 }
 
+.container {
+  padding: 1rem 5px;
+}
+.center-page-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 1000;
+}
+
+header.container {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
 
 h1, .h1 { font-size: 1.6rem; }
 h2, .h2 { font-size: 1.4rem; }
@@ -55,19 +71,19 @@ main {
   }
 }
 
-@media screen and (min-width: 601px) {
+@media screen and (min-width: 600px) {
   .container {
     padding-left: 3rem;
     padding-right: 3rem;
   }
 }
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 960px) {
   .container {
     padding-left: 8rem;
     padding-right: 8rem;
   }
 }
-@media screen and (min-width: 2048px) {
+@media screen and (min-width: 1280px) {
   .container {
     padding-left: 12rem;
     padding-right: 12rem;

@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import Map from "../Map";
-import { formatDatePeriodFromDateDuration } from "../../../helpers/date-helper";
+import { formatDatePeriodFromDateDuration } from "../../helpers/date-helper";
+import Map from "../UI/Map";
 
-export default function DatePlaceCard({ event }) {
+export default function LocationCard({ event }) {
     return (
         <div className="card date-place-card">
             <div className="card-header">

@@ -1,4 +1,4 @@
-export default function Form({ title, error, onSubmit, setValidInputs, children }) {    
+export default function Form({ className, title, error, onSubmit, setValidInputs, children }) {    
     const handleSubmit = (event) => {
         event.preventDefault();
 
@@ -15,7 +15,7 @@ export default function Form({ title, error, onSubmit, setValidInputs, children 
     };
     
     return (
-        <form className="card" onSubmit={handleSubmit}>
+        <form className={className} onSubmit={handleSubmit}>
             <h1>{title}</h1>
             {error && (
                 <div className="toast toast-error text-center">

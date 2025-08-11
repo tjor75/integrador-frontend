@@ -8,7 +8,7 @@ export default function EventList({ events }) {
             <div className="event-list">
                 <div className="columns">
                     {events.map((event) => (
-                        <div className="column col-4 col-md-6 col-sm-12" key={"event" + event.id}>
+                        <div className="column col-3 col-xl-4 col-lg-6 col-sm-12" key={"event" + event.id}>
                             <EventCard event={event} />
                         </div>
                     ))}
