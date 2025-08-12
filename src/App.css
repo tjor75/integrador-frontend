@@ -1,5 +1,6 @@
 @import url("assets/spectre-0.5.9/spectre.min.css");
 @import url("assets/spectre-0.5.9/spectre-icons.min.css");
+@import url("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
 
 #root {
   display: flex;

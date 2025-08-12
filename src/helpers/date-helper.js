@@ -16,15 +16,6 @@ export function formatDatePeriodFromDateDuration(dateString, addedMinsString) {
     return `${startDate.toLocaleDateString()} ${startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 }
 
-/* export function formatDuration(minutes) {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    if (hours > 0) {
-        return mins > 0 ? `${hours}h ${mins}min` : `${hours}h`;
-    }
-    return `${mins}min`;
-} */
-
 export function formatDateTime(dateString) {
     const date = new Date(dateString);
     return {
@@ -51,4 +42,12 @@ export function formatDuration(minutes) {
         const remainingMinutes = minutes % 60;
         return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}min` : `${hours}h`;
     }
+}
+
+export function formatGoogleCalendarDate(date) {
+    // YYYYMMDD
+    return date?.toISOString().replace(/[-:]/g, '').split('.')[0];
+}
+export function formatDigitalDate(date) {
+    return date?.toISOString().replace(/[-:]/g, '').split('.')[0]
 }

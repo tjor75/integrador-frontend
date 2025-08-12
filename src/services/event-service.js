@@ -1,6 +1,6 @@
 import { API_BASE_URL } from "../config/api-config.js";
 
-const getAllAsync = async (pageNumber, filters) => {
+export const getAllAsync = async (pageNumber, filters) => {
     const url = new URL(`${API_BASE_URL}/api/event`);
     let response;
 
@@ -17,7 +17,7 @@ const getAllAsync = async (pageNumber, filters) => {
     return await response.json();
 };
 
-const getByIdAsync = async (id) => {
+export const getByIdAsync = async (id) => {
     const response = await fetch(`${API_BASE_URL}/api/event/${id}`);
     if (!response.ok) {
         throw new Error(`Error fetching with ID ${id}: ${response.statusText}`);
@@ -25,7 +25,7 @@ const getByIdAsync = async (id) => {
     return await response.json();
 };
 
-const createAsync = async (entity) => {
+export const createAsync = async (entity) => {
     const response = await fetch(`${API_BASE_URL}/api/event`, {
         method: 'POST',
         headers: {
@@ -41,7 +41,7 @@ const createAsync = async (entity) => {
     return await response.json();
 };
 
-const updateByIdAsync = async (id, entity) => {
+export const updateAsync = async (id, entity) => {
     const response = await fetch(`${API_BASE_URL}/api/event/${id}`, {
         method: 'PUT',
         headers: {
@@ -58,7 +58,7 @@ const updateByIdAsync = async (id, entity) => {
     return await response.json();
 };
 
-const deleteAsync = async (id, jwtToken) => {
+export const deleteAsync = async (id, jwtToken) => {
     const response = await fetch(`${API_BASE_URL}/api/event/${id}`, {
         method: 'DELETE',
         headers: {
@@ -74,11 +74,23 @@ const deleteAsync = async (id, jwtToken) => {
     return await response.json();
 };
 
-const enrollAsync = async (eventId, jwtToken) => {
+export const checkEnrollmentAsync = async (eventId, jwtToken) => {
+    const response = await fetch(`${API_BASE_URL}/api/event/${eventId}/enroll`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`
+        }
+    });
+
+    console.log("Checking enrollment for event ID:", response.ok);
+
+    return response.ok;
+};
+
+export const enrollAsync = async (eventId, jwtToken) => {
     const response = await fetch(`${API_BASE_URL}/api/event/${eventId}/enroll`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
             'Authorization': `Bearer ${jwtToken}`
         }
     });
@@ -86,15 +98,12 @@ const enrollAsync = async (eventId, jwtToken) => {
     if (!response.ok) {
         throw new Error(`Error enrolling in event ${eventId}: ${response.statusText}`);
     }
+};
 
-    return await response.json();
-}
-
-const unenrollAsync = async (eventId, jwtToken) => {
-    const response = await fetch(`${API_BASE_URL}/api/event/${eventId}/unenroll`, {
-        method: 'POST',
+export const unenrollAsync = async (eventId, jwtToken) => {
+    const response = await fetch(`${API_BASE_URL}/api/event/${eventId}/enroll`, {
+        method: 'DELETE',
         headers: {
-            'Content-Type': 'application/json',
             'Authorization': `Bearer ${jwtToken}`
         }
     });
@@ -102,16 +111,4 @@ const unenrollAsync = async (eventId, jwtToken) => {
     if (!response.ok) {
         throw new Error(`Error unenrolling from event ${eventId}: ${response.statusText}`);
     }
-
-    return await response.json();
-};
-
-export {
-    getAllAsync,
-    getByIdAsync,
-    createAsync,
-    updateByIdAsync,
-    deleteAsync,
-    enrollAsync,
-    unenrollAsync
 };

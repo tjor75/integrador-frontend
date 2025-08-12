@@ -10,9 +10,11 @@ import EventDescriptionCard from "../../components/EventDescriptionCard";
 import EventHeaderSection from "../../components/EventHeaderSection";
 import EventDateSection from "../../components/EventDateSection";
 
-
 import EventLocationCard from "../../components/LocationCard";
 import EventTagsCard from "../../components/EventTagsCard";
+
+import "./EventPage.css";
+import EventAddToCalendarSection from "../../components/EventAddToCalendarSection/index.jsx";
 
 
 export default function EventPage() {
@@ -57,8 +59,9 @@ export default function EventPage() {
                         </div>
                         
                         <div className="column col-4 col-md-12">
-                            <div className="hide-md mb-2">
+                            <div className="mb-2">
                                 <EventEnrollmentCard event={event} />
+                                <EventAddToCalendarSection event={event} />
                             </div>
                         </div>
                     </div>

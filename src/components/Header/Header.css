@@ -12,3 +12,10 @@ header {
   padding: 3px;
   margin: 0;
 }
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+.navbar-brand img {
+  height: 20px;
+}

@@ -9,6 +9,7 @@ import EventPage from "./pages/EventPage";
 import CreateEventPage from "./pages/CreateEventPage";
 import EditEventPage from "./pages/EditEventPage";
 import NoEncontradoPage from "./pages/NoEncontradoPage";
+import EventLocationsPage from "./pages/EventLocationsPage";
 import "./App.css";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
                         <Route path="/event/:id"        element={<EventPage />} />
                         <Route path="/event/create"     element={<CreateEventPage />} />
                         <Route path="/event/:id/edit"   element={<EditEventPage />} />
+                        <Route path="/event-locations"  element={<EventLocationsPage />} />
                         <Route path="*"                 element={<NoEncontradoPage />} />
                     </Route>
                 </Routes>

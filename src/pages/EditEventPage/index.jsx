@@ -80,7 +80,7 @@ export default function EditEventPage() {
                 tags: formData.get("tags") ? formData.get("tags").split(",").map(tag => tag.trim()) : []
             };
 
-            await eventService.updateByIdAsync(id, eventData);
+            await eventService.updateAsync(id, eventData);
             navigate(`/event/${id}`);
         } catch (error) {
             console.error("Error updating event:", error);

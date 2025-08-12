@@ -9,3 +9,9 @@
     opacity: 50%;
     width: 33.33%;
 }
+
+@media screen and (max-width: 600px) {
+    .hero-people {
+        width: 60%;
+    }
+}

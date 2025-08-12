@@ -13,7 +13,7 @@ export default function HeaderUser({ user, setJwtToken, setCurrentUser }) {
 
     return (
         <div className="dropdown dropdown-right">
-            <button className="btn btn-primary dropdown-toggle" tabindex="0">
+            <button className="btn btn-primary dropdown-toggle" tabIndex="0">
                 <i className="icon icon-people" />
             </button>
             <ul className="menu">
