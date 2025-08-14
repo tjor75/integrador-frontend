@@ -1,13 +1,13 @@
 import { useContext, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { globalContext } from "../../context/GlobalContext";
+import { GlobalContext } from "../../context/GlobalContext";
 import SearchBar from "../SearchBar";
 import HeaderUser from "../UI/HeaderUser";
 import LogoColor from "../../assets/logo-color.svg";
 import "./Header.css";
 
 export default function Header() {
-    const { setJwtToken, currentUser, setCurrentUser } = useContext(globalContext);
+    const { setJwtToken, currentUser, setCurrentUser } = useContext(GlobalContext);
 
     return (
         <header className={"navbar bg-secondary container"}>

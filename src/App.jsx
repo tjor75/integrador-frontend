@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { GlobalProvider } from "./context/GlobalContext";
+import { GlobalContext } from "./context/GlobalContext";
+import * as userService from "./services/user-service";
 import Layout from "./pages/Layout";
 import HomePage from "./pages/HomePage";
 import EventsPage from "./pages/EventsPage";
@@ -13,8 +15,30 @@ import EventLocationsPage from "./pages/EventLocationsPage";
 import "./App.css";
 
 function App() {
+    const [jwtToken, setJwtToken] = useState(userService.getSavedJwtToken());
+    const [currentUser, setCurrentUser] = useState(userService.getSavedCurrentUser());
+    const [title, setTitle] = useState("Eventos para hacer");
+
+    useEffect(() => {
+        if (jwtToken)
+            userService.saveJwtToken(jwtToken);
+        else
+            userService.removeSavedJwtToken();
+    }, [jwtToken]);
+
+    useEffect(() => {
+        if (currentUser)
+            userService.saveCurrentUser(currentUser);
+        else
+            userService.removeSavedCurrentUser();
+    }, [currentUser]);
+
+    useEffect(() => {
+        document.title = `${title} - Mileventos`;
+    }, [title]);
+
     return (
-        <GlobalProvider>
+        <GlobalContext.Provider value={{ jwtToken, setJwtToken, currentUser, setCurrentUser, title, setTitle }}>
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Layout />}>
@@ -30,7 +54,7 @@ function App() {
                     </Route>
                 </Routes>
             </BrowserRouter>
-        </GlobalProvider>
+        </GlobalContext.Provider>
     )
 }
 

@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { globalContext } from "../../context/GlobalContext";
+import { GlobalContext } from "../../context/GlobalContext";
 import Form from "../../components/Form";
 import TextInput from "../../components/UI/TextInput";
 import TextAreaInput from "../../components/UI/TextAreaInput";
@@ -8,9 +8,10 @@ import NumberInput from "../../components/UI/NumberInput";
 import DateInput from "../../components/UI/DateInput";
 import EventLocationInput from "../../components/UI/EventLocationInput";
 import * as eventService from "../../services/event-service.js";
+import RedirectLogin from "../../components/RedirectLogin/index.jsx";
 
 export default function CreateEventPage() {
-    const { currentUser } = useContext(globalContext);
+    const { currentUser } = useContext(GlobalContext);
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -160,7 +161,7 @@ export default function CreateEventPage() {
                 </div>
             </main>
         ) : (
-            <Navigate to="/login" />
+            <RedirectLogin />
         )
     );
 }

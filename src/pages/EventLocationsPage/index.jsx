@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { globalContext } from "../../context/GlobalContext";
+import { GlobalContext } from "../../context/GlobalContext";
 import * as eventLocationService from "../../services/event-location-service.js";
 import CreateEventLocationModal from "../../components/EventLocations/CreateEventLocationModal";
 import EditEventLocationModal from "../../components/EventLocations/EditEventLocationModal";
 import ViewEventLocationModal from "../../components/EventLocations/ViewEventLocationModal";
 
 export default function EventLocationsPage() {
-    const { jwtToken, currentUser } = useContext(globalContext);
+    const { jwtToken, currentUser } = useContext(GlobalContext);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [items, setItems] = useState([]);

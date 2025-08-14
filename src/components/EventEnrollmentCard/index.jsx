@@ -1,10 +1,10 @@
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { globalContext } from "../../context/GlobalContext";
+import { GlobalContext } from "../../context/GlobalContext";
 import EventEnrollmentButton from "../EventEnrollmentButton";
 
 export default function EventEnrollmentCard({ event }) {
-    const { currentUser } = useContext(globalContext);
+    const { currentUser } = useContext(GlobalContext);
     const enabledForEnrollment = event.enabled_for_enrollment === true || event.enabled_for_enrollment === "1" || event.enabled_for_enrollment === 1;
 
     return (

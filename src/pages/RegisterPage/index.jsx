@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
-import { globalContext } from "../../context/GlobalContext.jsx";
+import { GlobalContext } from "../../context/GlobalContext.jsx";
 import * as userService from "../../services/user-service.js";
 import AuthForm from "../../components/AuthForm/index.jsx";
 import TextInput from "../../components/UI/TextInput/index.jsx";
@@ -9,7 +9,7 @@ import PasswordInput from "../../components/UI/PasswordInput/index.jsx";
 import { getEmailOrDefault } from "../../helpers/validator-helper.js";
 
 export default function RegisterPage() {
-    const { setJwtToken, currentUser, setCurrentUser } = useContext(globalContext);
+    const { setJwtToken, currentUser, setCurrentUser } = useContext(GlobalContext);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [validInputs, setValidInputs] = useState({

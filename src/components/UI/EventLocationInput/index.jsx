@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { globalContext } from "../../../context/GlobalContext";
+import { GlobalContext } from "../../../context/GlobalContext";
 import * as eventLocationService from "../../../services/event-location-service.js";
 
 export default function EventLocationInput({ 
@@ -11,7 +11,7 @@ export default function EventLocationInput({
     defaultValue = "",
     placeholder = "Selecciona una ubicación de evento o crea una nueva"
 }) {
-    const { jwtToken } = useContext(globalContext);
+    const { jwtToken } = useContext(GlobalContext);
     const [selectedEventLocation, setSelectedEventLocation] = useState(defaultValue);
     const [showNewEventLocationInput, setShowNewEventLocationInput] = useState(false);
     const [newEventLocation, setNewEventLocation] = useState({

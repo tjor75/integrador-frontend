@@ -1,10 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import * as eventService from "../../services/event-service.js";
-import { globalContext } from "../../context/GlobalContext";
+import { GlobalContext } from "../../context/GlobalContext";
+import useLoginRedirect from "../../hooks/useLoginRedirect.js";
 
 export default function EventEnrollmentButton({ event, enabledForEnrollment }) {
-    const { jwtToken } = useContext(globalContext);
+    const { jwtToken } = useContext(GlobalContext);
     const [enrollmentStatus, setEnrollmentStatus] = useState(null); // null, "enrolled", "not_enrolled"
+    const loginRedirect = useLoginRedirect();
 
     useEffect(() => {
         const checkEnrollment = async () => {
@@ -26,7 +28,7 @@ export default function EventEnrollmentButton({ event, enabledForEnrollment }) {
 
     const enroll = async () => {
         if (!jwtToken) {
-            window.location.href = "/login";
+            loginRedirect();
             return;
         }
 
@@ -41,7 +43,7 @@ export default function EventEnrollmentButton({ event, enabledForEnrollment }) {
 
     const unenroll = async () => {
         if (!jwtToken) {
-            window.location.href = "/login";
+            loginRedirect();
             return;
         }
         try {

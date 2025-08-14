@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { globalContext } from "../../context/GlobalContext";
+import { GlobalContext } from "../../context/GlobalContext";
 import Form from "../../components/Form";
 import TextInput from "../../components/UI/TextInput";
 import TextAreaInput from "../../components/UI/TextAreaInput";
@@ -12,7 +12,7 @@ import Loading from "../../components/UI/Loading";
 import NoEncontradoPage from "../NoEncontradoPage";
 
 export default function EditEventPage() {
-    const { currentUser } = useContext(globalContext);
+    const { currentUser } = useContext(GlobalContext);
     const navigate = useNavigate();
     const { id } = useParams();
     const [event, setEvent] = useState(null);

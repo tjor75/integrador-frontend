@@ -6,11 +6,11 @@ import NumberInput from "../UI/NumberInput";
 import MapPicker from "../UI/MapPicker";
 import { useEffect } from "react";
 import BaseLocationSelector from "../UI/BaseLocationSelector";
-import { globalContext } from "../../context/GlobalContext";
+import { GlobalContext } from "../../context/GlobalContext";
 import * as eventLocationService from "../../services/event-location-service.js";
 
 export default function CreateEventLocationModal({ isOpen, onClose, onCreated }) {
-    const { jwtToken } = useContext(globalContext);
+    const { jwtToken } = useContext(GlobalContext);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [validInputs, setValidInputs] = useState({

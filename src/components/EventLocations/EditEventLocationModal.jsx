@@ -4,11 +4,11 @@ import Form from "../Form";
 import TextInput from "../UI/TextInput";
 import NumberInput from "../UI/NumberInput";
 import MapPicker from "../UI/MapPicker";
-import { globalContext } from "../../context/GlobalContext";
+import { GlobalContext } from "../../context/GlobalContext";
 import * as eventLocationService from "../../services/event-location-service.js";
 
 export default function EditEventLocationModal({ isOpen, onClose, id, initialData, onUpdated }) {
-    const { jwtToken } = useContext(globalContext);
+    const { jwtToken } = useContext(GlobalContext);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [validInputs, setValidInputs] = useState({
