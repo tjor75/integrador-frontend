@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { getBaseLocationsAsync } from "../../../services/event-location-service.js";
+import { getLocationsAsync } from "../../../services/event-location-service.js";
 
-export default function BaseLocationSelector({
+export default function LocationSelector({
     name = "id_location",
     title = "Localidad / Provincia",
     placeholder = "Escribe para filtrar y seleccionar",
@@ -22,7 +22,7 @@ export default function BaseLocationSelector({
         (async () => {
             try {
                 setLoading(true);
-                const list = await getBaseLocationsAsync();
+                const list = await getLocationsAsync();
                 setAllLocations(list);
             } catch (err) {
                 setError(err.message);

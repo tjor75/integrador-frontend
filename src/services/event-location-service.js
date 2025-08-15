@@ -12,8 +12,8 @@ const getAllAsync = async (jwtToken) => {
     return await response.json();
 };
 
-const getBaseLocationsAsync = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/event-location/base-locations`);
+const getLocationsAsync = async () => {
+    const response = await fetch(`${API_BASE_URL}/api/event-location/locations`);
     if (!response.ok) {
         throw new Error(`Error fetching base locations: ${response.statusText}`);
     }
@@ -93,5 +93,5 @@ export {
     createAsync,
     updateAsync,
     deleteAsync,
-    getBaseLocationsAsync
+    getLocationsAsync
 };

@@ -5,7 +5,7 @@ import TextInput from "../UI/TextInput";
 import NumberInput from "../UI/NumberInput";
 import MapPicker from "../UI/MapPicker";
 import { useEffect } from "react";
-import BaseLocationSelector from "../UI/BaseLocationSelector";
+import LocationSelector from "../UI/LocationSelector";
 import { GlobalContext } from "../../context/GlobalContext";
 import * as eventLocationService from "../../services/event-location-service.js";
 
@@ -20,7 +20,7 @@ export default function CreateEventLocationModal({ isOpen, onClose, onCreated })
         latlng: true
     });
     const [latlng, setLatlng] = useState(null);
-    const [selectedBaseLocationId, setSelectedBaseLocationId] = useState("");
+    const [selectedLocationId, setSelectedLocationId] = useState("");
 
     const groupByProvince = (list) => {
         const map = new Map();
@@ -87,9 +87,9 @@ export default function CreateEventLocationModal({ isOpen, onClose, onCreated })
                         <TextInput name="name" title="Nombre" placeholder="Ej: Auditorio Central" required validInputs={validInputs} setValidInputs={setValidInputs} />
                         <TextInput name="full_address" title="Dirección" placeholder="Calle 123, Ciudad" required validInputs={validInputs} setValidInputs={setValidInputs} />
                         <NumberInput name="max_capacity" title="Capacidad máxima" placeholder="50" required min={1} validInputs={validInputs} setValidInputs={setValidInputs} />
-                        <BaseLocationSelector
-                            value={selectedBaseLocationId}
-                            onChange={setSelectedBaseLocationId}
+                        <LocationSelector
+                            value={selectedLocationId}
+                            onChange={setSelectedLocationId}
                             required
                             helperText="Filtrá por nombre de localidad o provincia"
                         />
