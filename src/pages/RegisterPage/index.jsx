@@ -1,15 +1,17 @@
 import { useContext, useState } from "react";
-import { Link, Navigate } from "react-router-dom";
-import { GlobalContext } from "../../context/GlobalContext.jsx";
+import { Link, Navigate, useSearchParams, useNavigate } from "react-router-dom";
+import { GlobalContext } from "../../context/GlobalContext";
 import * as userService from "../../services/user-service.js";
 import AuthForm from "../../components/AuthForm/index.jsx";
 import TextInput from "../../components/UI/TextInput/index.jsx";
 import EmailInput from "../../components/UI/EmailInput/index.jsx";
 import PasswordInput from "../../components/UI/PasswordInput/index.jsx";
 import { getEmailOrDefault } from "../../helpers/validator-helper.js";
+import useAuth from "../../hooks/useAuth";
 
 export default function RegisterPage() {
-    const { setJwtToken, currentUser, setCurrentUser } = useContext(GlobalContext);
+    const { currentUser } = useContext(GlobalContext);
+    const [searchParams] = useSearchParams();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [validInputs, setValidInputs] = useState({
@@ -18,6 +20,20 @@ export default function RegisterPage() {
         username: null,
         password: null
     });
+    const { login } = useAuth();
+    const navigate = useNavigate();
+
+    const getRedirectTo = () => {
+        const raw = searchParams.get("redirect_to");
+        if (!raw) return "/";
+        let decoded = raw;
+        try { decoded = decodeURIComponent(raw); } catch (_) { /* ignore */ }
+        if (decoded.startsWith("/") && !decoded.startsWith("//")) {
+            if (decoded === "/login" || decoded === "/register") return "/"; // avoid loops
+            return decoded;
+        }
+        return "/";
+    };
 
     const handleRegister = async (event) => {
         const firstName = event.target.first_name.value.trim();
@@ -29,10 +45,9 @@ export default function RegisterPage() {
             setLoading(true);
             try {
                 await userService.registerAsync(firstName, lastName, username, password);
-                const newJwtToken = await userService.loginAsync(username, password);
-                setJwtToken(newJwtToken);
-                setCurrentUser({ username });
+                await login(username, password);
                 event.target.reset();
+                navigate(getRedirectTo(), { replace: true });
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -43,7 +58,7 @@ export default function RegisterPage() {
 
     return (
         currentUser ? (
-            <Navigate to="/" replace />
+            <Navigate to={getRedirectTo()} replace />
         ) : (
             <AuthForm title="Registrar" error={error} onSubmit={handleRegister} setValidInputs={setValidInputs}>
                 <TextInput
@@ -81,7 +96,12 @@ export default function RegisterPage() {
                         disabled={loading}>
                         Registrar
                     </button>
-                    <p className="form-text">&iquest;Ya tienes cuenta? <Link to="/login">Ingresa</Link></p>
+                    <p className="form-text">
+                        &iquest;Ya tienes cuenta?
+                        <Link to={"/login" + (
+                            getRedirectTo() !== "/" ? `?redirect_to=${encodeURIComponent(getRedirectTo())}` : ""
+                        )}>Ingresa</Link>
+                    </p>
                 </div>
             </AuthForm>
         )

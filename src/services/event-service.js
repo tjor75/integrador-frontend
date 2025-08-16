@@ -1,3 +1,4 @@
+import { StatusCodes } from "http-status-codes";
 import { API_BASE_URL } from "../config/api-config.js";
 
 export const getAllAsync = async (pageNumber, filters) => {
@@ -10,52 +11,57 @@ export const getAllAsync = async (pageNumber, filters) => {
     url.searchParams.append("tag",          filters.tag ?? "");
 
     response = await fetch(url.toString());
-    if (!response.ok) {
-        throw new Error(`Error fetching event: ${response.statusText}`);
-    }
+
+    if (!response.ok)
+        throw new Error(await response.text());
 
     return await response.json();
 };
 
 export const getByIdAsync = async (id) => {
     const response = await fetch(`${API_BASE_URL}/api/event/${id}`);
-    if (!response.ok) {
-        throw new Error(`Error fetching with ID ${id}: ${response.statusText}`);
+    let result;
+    
+    switch (response.status) {
+        case StatusCodes.OK:
+            result = await response.json();
+            break;
+        case StatusCodes.NOT_FOUND:
+            result = null;
+            break;
+        default:
+            throw new Error(await response.text());
     }
-    return await response.json();
+
+    return result;
 };
 
-export const createAsync = async (entity) => {
+export const createAsync = async (jwtToken, entity) => {
     const response = await fetch(`${API_BASE_URL}/api/event`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${jwtToken}`
         },
         body: JSON.stringify(entity)
     });
 
-    if (!response.ok) {
-        throw new Error(`Error creating: ${response.statusText}`);
-    }
-
-    return await response.json();
+    if (!response.ok)
+        throw new Error(await response.text());
 };
 
-export const updateAsync = async (id, entity) => {
+export const updateAsync = async (id, jwtToken, entity) => {
     const response = await fetch(`${API_BASE_URL}/api/event/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${entity.jwtToken}`
+            'Authorization': `Bearer ${jwtToken}`
         },
         body: JSON.stringify(entity)
     });
 
-    if (!response.ok) {
-        throw new Error(`Error updating with ID ${id}: ${response.statusText}`);
-    }
-
-    return await response.json();
+    if (!response.ok)
+        throw new Error(await response.text());
 };
 
 export const deleteAsync = async (id, jwtToken) => {
@@ -67,48 +73,53 @@ export const deleteAsync = async (id, jwtToken) => {
         }
     });
 
-    if (!response.ok) {
-        throw new Error(`Error deleting with ID ${id}: ${response.statusText}`);
-    }
-
-    return await response.json();
+    if (!response.ok)
+        throw new Error(await response.text());
 };
 
 export const checkEnrollmentAsync = async (eventId, jwtToken) => {
-    const response = await fetch(`${API_BASE_URL}/api/event/${eventId}/enroll`, {
+    const response = await fetch(`${API_BASE_URL}/api/event/${eventId}/enrollment`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${jwtToken}`
         }
     });
+    let result;
+    
+    switch (response.status) {
+        case StatusCodes.CREATED:
+            result = true;
+            break;
+        case StatusCodes.NOT_FOUND:
+            result = false;
+            break;
+        default:
+            throw new Error(await response.text());
+    }
 
-    console.log("Checking enrollment for event ID:", response.ok);
-
-    return response.ok;
+    return result;
 };
 
 export const enrollAsync = async (eventId, jwtToken) => {
-    const response = await fetch(`${API_BASE_URL}/api/event/${eventId}/enroll`, {
+    const response = await fetch(`${API_BASE_URL}/api/event/${eventId}/enrollment`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${jwtToken}`
         }
     });
 
-    if (!response.ok) {
-        throw new Error(`Error enrolling in event ${eventId}: ${response.statusText}`);
-    }
+    if (!response.ok)
+        throw new Error(await response.text());
 };
 
 export const unenrollAsync = async (eventId, jwtToken) => {
-    const response = await fetch(`${API_BASE_URL}/api/event/${eventId}/enroll`, {
+    const response = await fetch(`${API_BASE_URL}/api/event/${eventId}/enrollment`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${jwtToken}`
         }
     });
 
-    if (!response.ok) {
-        throw new Error(`Error unenrolling from event ${eventId}: ${response.statusText}`);
-    }
+    if (!response.ok)
+        throw new Error(await response.text());
 };

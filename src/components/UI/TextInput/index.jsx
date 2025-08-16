@@ -4,9 +4,9 @@ export default function TextInput({
     placeholder, 
     validInputs, 
     setValidInputs, 
-    required = false,
     defaultValue = "",
-    min = 3
+    min = 3,
+    required = false
 }) {
     const validateText = (text) => {
         let isValid = true;
@@ -43,7 +43,7 @@ export default function TextInput({
                 placeholder={placeholder}
                 defaultValue={defaultValue}
                 onChange={handleTextChange}
-                required={required} />
+            />
             {validInputs[name] === false && (
                 <p className="form-input-hint text-error">
                     {required && "Este campo es requerido. "}

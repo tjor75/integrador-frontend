@@ -43,12 +43,6 @@ export default function EventHeaderSection({ event }) {
                                 Organizado por {event.creator_user.first_name} {event.creator_user.last_name}
                             </span>
                         </div>
-                        {event.price !== undefined && (
-                            <div className="chip bg-success text-light mr-2 mb-1">
-                                <i className="icon icon-bookmark mr-1"></i>
-                                {formatPrice(event.price)}
-                            </div>
-                        )}
                         {!event.enabled_for_enrollment && (
                             <div className="chip bg-error text-light mr-2 mb-1">
                                 <i className="icon icon-cross mr-1"></i>

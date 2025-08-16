@@ -1,8 +1,9 @@
 import Modal from "../UI/Modal";
-import MapPicker from "../UI/MapPicker";
+import MapViewer from "../UI/MapViewer";
+import Loading from "../UI/Loading";
 
 export default function ViewEventLocationModal({ isOpen, onClose, data }) {
-    const { name, full_address, max_capacity, id } = data || {};
+    const { name, full_address, max_capacity, id, location_name, province_name } = data || {};
 
     return (
         <Modal isOpen={isOpen} title="Detalle de ubicación" onClose={onClose}
@@ -23,6 +24,9 @@ export default function ViewEventLocationModal({ isOpen, onClose, data }) {
                             <div className="tile-content">
                                 <div className="tile-subtitle">
                                     <div className="mb-1">Dirección: {full_address}</div>
+                                    {location_name && province_name && (
+                                        <div className="mb-1">Localidad: <span className="label label-rounded label-primary">{location_name} · {province_name}</span></div>
+                                    )}
                                     <div className="mb-1">Capacidad máxima: <span className="label label-rounded label-secondary">{max_capacity}</span></div>
                                     <div className="text-gray text-small">ID: {id}</div>
                                 </div>
@@ -31,13 +35,19 @@ export default function ViewEventLocationModal({ isOpen, onClose, data }) {
 
                         {data && data.latitude && data.longitude && (
                             <div className="mt-2">
-                                <MapPicker value={{ lat: data.latitude, lng: data.longitude }} onChange={() => {}} />
+                                <MapViewer
+                                    position={[Number(data.latitude), Number(data.longitude)]}
+                                    zoom={18}
+                                    popup={<b>{name}</b>}
+                                />
                             </div>
                         )}
                     </div>
                 </div>
             ) : (
-                <div>Cargando...</div>
+                <div>
+                    <Loading />
+                </div>
             )}
         </Modal>
     );

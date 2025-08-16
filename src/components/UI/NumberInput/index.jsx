@@ -60,7 +60,7 @@ export default function NumberInput({
                 min={min}
                 max={max}
                 onChange={handleNumberChange}
-                required={required} />
+            />
             {validInputs[name] === false && (
                 <p className="form-input-hint text-error">{getErrorMessage()}</p>
             )}

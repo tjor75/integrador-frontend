@@ -1,70 +1,73 @@
-import { useEffect, useMemo, useState } from "react";
-import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
-import L from "leaflet";
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import { useEffect, useState } from "react";
+import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
+import { Icon } from "leaflet";
+import "leaflet/dist/leaflet.css";
 
-// Fix default marker icons for bundlers
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl: markerIcon2x,
-    iconUrl: markerIcon,
-    shadowUrl: markerShadow,
-});
+const DEFAULT_CENTER = { lat: -34.6037, lng: -58.3816 };
 
-const defaultCenter = { lat: -34.6037, lng: -58.3816 }; // Buenos Aires
-
-function ClickHandler({ onClick }) {
+function MapClicks({ onPick }) {
     useMapEvents({
         click(e) {
-            onClick?.(e.latlng);
-        },
+            onPick({ lat: e.latlng.lat, lng: e.latlng.lng });
+        }
     });
     return null;
 }
 
+// Recentrar el mapa cuando cambie la posición externa
+function RecenterOnChange({ position }) {
+    const map = useMap();
+    useEffect(() => {
+        if (position?.lat != null && position?.lng != null) {
+            map.setView(position);
+        }
+    }, [position?.lat, position?.lng, map]);
+    return null;
+}
+
 export default function MapPicker({ value, onChange, height = 300, zoom = 13 }) {
-    const [markerPosition, setMarkerPosition] = useState(value ?? defaultCenter);
+    //const [pos, setPos] = useState(value || DEFAULT_CENTER);
+    const [pos, setPos] = useState(value);
 
     useEffect(() => {
-        if (value && (value.lat !== markerPosition.lat || value.lng !== markerPosition.lng)) {
-            setMarkerPosition(value);
+        if (value && (value.lat !== pos.lat || value.lng !== pos.lng)) {
+            setPos(value);
         }
+        //if (!value && !pos) setPos(DEFAULT_CENTER);
     }, [value]);
 
-    const handleSetPosition = (pos) => {
-        setMarkerPosition(pos);
-        onChange?.(pos);
+    const setPosition = (p) => {
+        setPos(p);
+        onChange?.(p);
     };
-
-    const mapStyle = useMemo(() => ({ height, width: "100%", borderRadius: 6, overflow: "hidden" }), [height]);
 
     return (
         <div>
-            <div style={mapStyle}>
-                <MapContainer center={markerPosition} zoom={zoom} style={{ height: "100%", width: "100%" }} scrollWheelZoom>
+            <div style={{ height, width: "100%", borderRadius: 6, overflow: "hidden" }}>
+                <MapContainer center={pos} zoom={zoom} style={{ height: "100%", width: "100%" }} scrollWheelZoom>
                     <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        attribution='&copy; OpenStreetMap'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
-                    <ClickHandler onClick={handleSetPosition} />
-                    <Marker
-                        position={markerPosition}
-                        draggable
-                        eventHandlers={{
-                            dragend: (e) => {
-                                const latlng = e.target.getLatLng();
-                                handleSetPosition({ lat: latlng.lat, lng: latlng.lng });
-                            },
-                        }}
-                    />
+                    <MapClicks onPick={setPosition} />
+                    {pos && (
+                        <Marker
+                            position={pos}
+                            draggable
+                            eventHandlers={{
+                                dragend: (e) => {
+                                    const m = e.target.getLatLng();
+                                    setPosition({ lat: m.lat, lng: m.lng });
+                                }
+                            }}
+                        />
+                    )}
+                    <RecenterOnChange position={pos} />
                 </MapContainer>
             </div>
             <div className="text-small text-gray mt-1">
-                Lat: {markerPosition.lat.toFixed(6)} | Lng: {markerPosition.lng.toFixed(6)}
+                Lat: {pos.lat.toFixed(6)} | Lng: {pos.lng.toFixed(6)}
             </div>
         </div>
     );
 }
-
-

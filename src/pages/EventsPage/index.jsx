@@ -37,7 +37,7 @@ export default function EventsPage() {
                 setHasMoreEvents(false);
         } catch (error) {
             console.error("Error fetching events:", error);
-            setError(error);
+            setError(error.message);
             setHasMoreEvents(false);
         } finally {
             setLoading(false);

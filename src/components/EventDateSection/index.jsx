@@ -1,6 +1,4 @@
-import { Link } from "react-router-dom";
 import { formatDateTime, formatDuration } from "../../helpers/date-helper";
-import Map from "../UI/Map";
 
 export default function EventDateSection({ event }) {
     return (

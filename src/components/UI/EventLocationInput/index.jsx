@@ -1,5 +1,5 @@
-import { useState, useEffect, useContext } from "react";
-import { GlobalContext } from "../../../context/GlobalContext";
+import { useState, useEffect } from "react";
+import useAuth from "../../../hooks/useAuth";
 import * as eventLocationService from "../../../services/event-location-service.js";
 
 export default function EventLocationInput({ 
@@ -7,11 +7,11 @@ export default function EventLocationInput({
     title, 
     validInputs, 
     setValidInputs, 
-    required = false,
     defaultValue = "",
-    placeholder = "Selecciona una ubicación de evento o crea una nueva"
+    placeholder = "Selecciona una ubicación de evento o crea una nueva",
+    required = false
 }) {
-    const { jwtToken } = useContext(GlobalContext);
+    const { jwtToken, validateSession } = useAuth();
     const [selectedEventLocation, setSelectedEventLocation] = useState(defaultValue);
     const [showNewEventLocationInput, setShowNewEventLocationInput] = useState(false);
     const [newEventLocation, setNewEventLocation] = useState({
@@ -42,7 +42,9 @@ export default function EventLocationInput({
             const eventLocationsData = await eventLocationService.getAllAsync(jwtToken);
             setEventLocations(eventLocationsData);
         } catch (error) {
-            console.error("Error fetching event locations:", error);
+            if (validateSession(error)) {
+                console.error("Error fetching event locations:", error);
+            }
         } finally {
             setLoading(false);
         }
@@ -86,7 +88,8 @@ export default function EventLocationInput({
             setShowNewEventLocationInput(false);
             setValidInputs(prev => ({ ...prev, [name]: true }));
         } catch (error) {
-            console.error("Error creating event location:", error);
+            if (validateSession(error))
+                console.error("Error creating event location:", error);
         }
     };
 
@@ -103,7 +106,6 @@ export default function EventLocationInput({
                     name={name}
                     value={selectedEventLocation}
                     onChange={(e) => handleEventLocationChange(e.target.value)}
-                    required={required}
                     disabled={loading}
                 >
                     <option value="">{loading ? "Cargando ubicaciones..." : placeholder}</option>
@@ -124,7 +126,7 @@ export default function EventLocationInput({
                                 placeholder="Nombre de la ubicación"
                                 value={newEventLocation.name}
                                 onChange={(e) => handleNewEventLocationChange("name", e.target.value)}
-                                required={required}
+                                //required={required}
                             />
                         </div>
                         <div className="column col-6 col-md-12">
@@ -135,7 +137,7 @@ export default function EventLocationInput({
                                 min="1"
                                 value={newEventLocation.max_capacity}
                                 onChange={(e) => handleNewEventLocationChange("max_capacity", parseInt(e.target.value))}
-                                required={required}
+                                //required={required}
                             />
                         </div>
                     </div>
@@ -145,7 +147,7 @@ export default function EventLocationInput({
                         placeholder="Dirección completa"
                         value={newEventLocation.full_address}
                         onChange={(e) => handleNewEventLocationChange("full_address", e.target.value)}
-                        required={required}
+                        //required={required}
                     />
                     <div className="btn-group">
                         <button 

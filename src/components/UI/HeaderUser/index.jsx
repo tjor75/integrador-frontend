@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import useAuth from "../../../hooks/useAuth";
 
-export default function HeaderUser({ user, setJwtToken, setCurrentUser }) {
+export default function HeaderUser() {
+    const { currentUser, logout } = useAuth();
     const [loggingOut, setLoggingOut] = useState(false);
 
     const handleLogout = async () => {
         setLoggingOut(true);
-        await setJwtToken(null);
-        await setCurrentUser(null);
+        await logout();
         setLoggingOut(false);
     };
 
@@ -17,7 +18,7 @@ export default function HeaderUser({ user, setJwtToken, setCurrentUser }) {
                 <i className="icon icon-people" />
             </button>
             <ul className="menu">
-                <li className="menu-item">{user.username}</li>
+                <li className="menu-item">{currentUser?.username}</li>
                 <li className="divider" />
                 <li className="menu-item">
                     <NavLink to="/event/new" className="menu-link">

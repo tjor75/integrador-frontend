@@ -7,7 +7,7 @@ import LogoColor from "../../assets/logo-color.svg";
 import "./Header.css";
 
 export default function Header() {
-    const { setJwtToken, currentUser, setCurrentUser } = useContext(GlobalContext);
+    const { currentUser } = useContext(GlobalContext);
 
     return (
         <header className={"navbar bg-secondary container"}>
@@ -27,11 +27,7 @@ export default function Header() {
                             <NavLink className="btn btn-primary mr-2" to="/event/create">
                                 ➕ Crear Evento
                             </NavLink>
-                            <HeaderUser
-                                user={currentUser}
-                                setJwtToken={setJwtToken}
-                                setCurrentUser={setCurrentUser}
-                            />
+                            <HeaderUser />
                         </>
                     ) : (
                         <>

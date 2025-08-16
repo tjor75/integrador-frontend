@@ -19,6 +19,11 @@
   text-align: center;
   z-index: 1000;
 }
+.justify-content-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
 header.container {
   padding-top: 3px;

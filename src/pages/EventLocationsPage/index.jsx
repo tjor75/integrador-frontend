@@ -1,13 +1,15 @@
-import { useContext, useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
-import { GlobalContext } from "../../context/GlobalContext";
+import { useEffect, useState } from "react";
+import useAuth from "../../hooks/useAuth.js";
 import * as eventLocationService from "../../services/event-location-service.js";
 import CreateEventLocationModal from "../../components/EventLocations/CreateEventLocationModal";
 import EditEventLocationModal from "../../components/EventLocations/EditEventLocationModal";
 import ViewEventLocationModal from "../../components/EventLocations/ViewEventLocationModal";
+import Loading from "../../components/UI/Loading";
+import RedirectLogin from "../../components/RedirectLogin";
+import EventLocationCard from "../../components/UI/EventLocationCard/index.jsx";
 
 export default function EventLocationsPage() {
-    const { jwtToken, currentUser } = useContext(GlobalContext);
+    const { jwtToken, currentUser, validateSession } = useAuth();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [items, setItems] = useState([]);
@@ -17,12 +19,16 @@ export default function EventLocationsPage() {
 
     const fetchItems = async () => {
         if (!jwtToken) return;
+
         try {
             setLoading(true);
             const all = await eventLocationService.getAllAsync(jwtToken);
             setItems(all);
         } catch (err) {
-            setError(err.message);
+            if (validateSession(err)) {
+                console.error("Error fetching event locations:", err);
+                setError(err.message);
+            }
         } finally {
             setLoading(false);
         }
@@ -30,7 +36,6 @@ export default function EventLocationsPage() {
 
     useEffect(() => {
         fetchItems();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [jwtToken]);
 
     const handleDelete = async (id) => {
@@ -39,12 +44,15 @@ export default function EventLocationsPage() {
             await eventLocationService.deleteAsync(id, jwtToken);
             setItems((prev) => prev.filter((x) => x.id !== id));
         } catch (err) {
-            alert(err.message);
+            if (validateSession(err)) {
+                console.error("Error deleting event location:", err);
+                setError(err.message);
+            }
         }
     };
 
     if (!currentUser) {
-        return <Navigate to="/login" />;
+        return <RedirectLogin />;
     }
 
     return (
@@ -54,7 +62,7 @@ export default function EventLocationsPage() {
                     <div className="d-flex justify-content-between align-center mb-2">
                         <h1>Mis ubicaciones de evento</h1>
                         <button className="btn btn-primary" onClick={() => setShowCreate(true)}>
-                            <i className="icon icon-plus mr-1"></i>
+                            <i className="icon icon-plus mr-1" />
                             Nueva ubicación
                         </button>
                     </div>
@@ -67,13 +75,13 @@ export default function EventLocationsPage() {
 
                     {loading ? (
                         <div className="card">
-                            <div className="card-body">Cargando...</div>
+                            <div className="card-body"><Loading /></div>
                         </div>
                     ) : items.length === 0 ? (
                         <div className="card">
                             <div className="card-body">
                                 <div className="empty">
-                                    <div className="empty-icon"><i className="icon icon-location"></i></div>
+                                    <div className="empty-icon"><i className="icon icon-location" /></div>
                                     <p className="empty-title h5">No tienes ubicaciones creadas</p>
                                     <p className="empty-subtitle">Crea tu primera ubicación para organizar tus eventos</p>
                                     <div className="empty-action">
@@ -84,25 +92,15 @@ export default function EventLocationsPage() {
                         </div>
                     ) : (
                         <div className="card">
-                            <div className="card-header">
-                                <div className="card-title">Listado</div>
-                            </div>
                             <div className="card-body">
                                 {items.map((it) => (
-                                    <div key={it.id} className="tile tile-centered mb-2">
-                                        <div className="tile-icon"><i className="icon icon-location"></i></div>
-                                        <div className="tile-content">
-                                            <div className="tile-title text-bold">{it.name}</div>
-                                            <div className="tile-subtitle text-gray">{it.full_address}</div>
-                                        </div>
-                                        <div className="tile-action">
-                                            <div className="btn-group">
-                                                <button className="btn btn-sm" onClick={() => setViewTarget(it)}>Ver</button>
-                                                <button className="btn btn-sm" onClick={() => setEditTarget(it)}>Editar</button>
-                                                <button className="btn btn-sm btn-error" onClick={() => handleDelete(it.id)}>Eliminar</button>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <EventLocationCard
+                                        key={it.id}
+                                        it={it}
+                                        setViewTarget={setViewTarget}
+                                        setEditTarget={setEditTarget}
+                                        handleDelete={handleDelete}
+                                    />
                                 ))}
                             </div>
                         </div>

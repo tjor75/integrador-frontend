@@ -1,4 +1,4 @@
-import Map from "../UI/Map";
+import MapViewer from "../UI/MapViewer";
 
 export default function LocationCard({ event }) {
     return (
@@ -15,7 +15,7 @@ export default function LocationCard({ event }) {
                 </a>
             </div>
             <div className="card-image">
-                <Map
+                <MapViewer
                     position={[event.event_location.latitude, event.event_location.longitude]}
                     name={event.event_location.name}
                     zoom={18}

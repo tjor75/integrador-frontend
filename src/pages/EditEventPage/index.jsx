@@ -1,6 +1,6 @@
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { GlobalContext } from "../../context/GlobalContext";
+import useAuth from "../../hooks/useAuth.js";
 import Form from "../../components/Form";
 import TextInput from "../../components/UI/TextInput";
 import TextAreaInput from "../../components/UI/TextAreaInput";
@@ -12,7 +12,7 @@ import Loading from "../../components/UI/Loading";
 import NoEncontradoPage from "../NoEncontradoPage";
 
 export default function EditEventPage() {
-    const { currentUser } = useContext(GlobalContext);
+    const { jwtToken, currentUser, validateSession } = useAuth();
     const navigate = useNavigate();
     const { id } = useParams();
     const [event, setEvent] = useState(null);
@@ -49,7 +49,7 @@ export default function EditEventPage() {
             });
         } catch (error) {
             console.error("Error fetching event:", error);
-            setError("Error al cargar el evento.");
+            setError(error.message);
         } finally {
             setLoading(false);
         }
@@ -59,11 +59,11 @@ export default function EditEventPage() {
         event.preventDefault();
         
         // Verificar que todos los campos requeridos estén válidos
-        const allValid = Object.values(validInputs).every(valid => valid === true);
+        /* const allValid = Object.values(validInputs).every(valid => valid === true);
         if (!allValid) {
             setError("Por favor, completa todos los campos correctamente.");
             return;
-        }
+        } */
 
         setSaving(true);
         setError(null);
@@ -80,11 +80,13 @@ export default function EditEventPage() {
                 tags: formData.get("tags") ? formData.get("tags").split(",").map(tag => tag.trim()) : []
             };
 
-            await eventService.updateAsync(id, eventData);
+            await eventService.updateAsync(id, jwtToken, eventData);
             navigate(`/event/${id}`);
         } catch (error) {
-            console.error("Error updating event:", error);
-            setError("Error al actualizar el evento. Por favor, intenta de nuevo.");
+            if (validateSession(error)) {
+                console.error("Error updating event:", error);
+                setError(error.message);
+            }
         } finally {
             setSaving(false);
         }
@@ -117,7 +119,7 @@ export default function EditEventPage() {
                             <TextInput
                                 name="name"
                                 title="Nombre del evento *"
-                                placeholder="Ej: Festival de Rock 2024"
+                                placeholder="Ej: Festival de Rock"
                                 defaultValue={event.name}
                                 validInputs={validInputs}
                                 setValidInputs={setValidInputs}
@@ -162,7 +164,7 @@ export default function EditEventPage() {
 
                             <EventLocationInput
                                 name="eventLocation"
-                                title="Ubicación del evento *"
+                                title="Ubicación del evento"
                                 defaultValue={event.event_location ? event.event_location.name : ""}
                                 validInputs={validInputs}
                                 setValidInputs={setValidInputs}

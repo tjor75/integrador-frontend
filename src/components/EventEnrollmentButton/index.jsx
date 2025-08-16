@@ -1,11 +1,12 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import * as eventService from "../../services/event-service.js";
-import { GlobalContext } from "../../context/GlobalContext";
+import useAuth from "../../hooks/useAuth.js";
 import useLoginRedirect from "../../hooks/useLoginRedirect.js";
 
 export default function EventEnrollmentButton({ event, enabledForEnrollment }) {
-    const { jwtToken } = useContext(GlobalContext);
+    const [loading, setLoading] = useState(false);
     const [enrollmentStatus, setEnrollmentStatus] = useState(null); // null, "enrolled", "not_enrolled"
+    const { jwtToken, validateSession } = useAuth();
     const loginRedirect = useLoginRedirect();
 
     useEffect(() => {
@@ -13,10 +14,12 @@ export default function EventEnrollmentButton({ event, enabledForEnrollment }) {
             if (jwtToken) {
                 try {
                     const es = await eventService.checkEnrollmentAsync(event.id, jwtToken);
-                    console.log("Enrollment status:", es);
                     setEnrollmentStatus(es);
                 } catch (error) {
-                    console.error("Error checking enrollment status:", error);
+                    if (validateSession(error)) {
+                        console.error("Error checking enrollment status:", error);
+                        alert(error.message || "No se pudo verificar el estado de inscripción.");
+                    }
                     setEnrollmentStatus(false);
                 }
             } else {
@@ -33,11 +36,16 @@ export default function EventEnrollmentButton({ event, enabledForEnrollment }) {
         }
 
         try {
+            setLoading(true);
             await eventService.enrollAsync(event.id, jwtToken);
             setEnrollmentStatus(true);
         } catch (error) {
-            console.error("Enrollment error:", error);
-            alert(error.message || "No se pudo inscribir al evento.");
+            if (validateSession(error)) {
+                console.error("Enrollment error:", error);
+                alert(error.message || "No se pudo inscribir al evento.");
+            }
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -46,17 +54,23 @@ export default function EventEnrollmentButton({ event, enabledForEnrollment }) {
             loginRedirect();
             return;
         }
+
         try {
+            setLoading(true);
             await eventService.unenrollAsync(event.id, jwtToken);
             setEnrollmentStatus(false);
         } catch (error) {
-            console.error("Unenrollment error:", error);
-            alert(error.message || "No se pudo desinscribir del evento.");
+            if (validateSession(error)) {
+                console.error("Unenrollment error:", error);
+                alert(error.message || "No se pudo desinscribir del evento.");
+            }
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        enrollmentStatus !== null ? (
+        loading !== null ? (
             <button
                 className={enrollmentStatus ? "btn btn-secondary" : "btn btn-primary"}
                 onClick={enrollmentStatus ? unenroll : enroll}

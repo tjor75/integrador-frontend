@@ -19,7 +19,7 @@ import EventAddToCalendarSection from "../../components/EventAddToCalendarSectio
 
 export default function EventPage() {
     const params = useParams();
-    const id = getSerialOrDefault(params.id, null);
+    const id = params.id;
     const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(true);
 

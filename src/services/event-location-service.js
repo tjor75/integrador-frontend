@@ -1,3 +1,4 @@
+import { StatusCodes } from "http-status-codes";
 import { API_BASE_URL } from "../config/api-config.js";
 
 const getAllAsync = async (jwtToken) => {
@@ -6,17 +7,19 @@ const getAllAsync = async (jwtToken) => {
             'Authorization': `Bearer ${jwtToken}`
         }
     });
-    if (!response.ok) {
-        throw new Error(`Error fetching event locations: ${response.statusText}`);
-    }
+
+    if (!response.ok)
+        throw new Error(await response.text());
+
     return await response.json();
 };
 
 const getLocationsAsync = async () => {
     const response = await fetch(`${API_BASE_URL}/api/event-location/locations`);
-    if (!response.ok) {
-        throw new Error(`Error fetching base locations: ${response.statusText}`);
-    }
+
+    if (!response.ok)
+        throw new Error(await response.text());
+
     return await response.json();
 };
 
@@ -26,10 +29,20 @@ const getByIdAsync = async (id, jwtToken) => {
             'Authorization': `Bearer ${jwtToken}`
         }
     });
-    if (!response.ok) {
-        throw new Error(`Error fetching event location with ID ${id}: ${response.statusText}`);
+    let result;
+    
+    switch (response.status) {
+        case StatusCodes.OK:
+            result = await response.json();
+            break;
+        case StatusCodes.NOT_FOUND:
+            result = null;
+            break;
+        default:
+            throw new Error(await response.text());
     }
-    return await response.json();
+
+    return result;
 };
 
 const createAsync = async (eventLocation, jwtToken) => {
@@ -41,12 +54,9 @@ const createAsync = async (eventLocation, jwtToken) => {
         },
         body: JSON.stringify(eventLocation)
     });
-
-    if (!response.ok) {
-        throw new Error(`Error creating event location: ${response.statusText}`);
-    }
-
-    return await response.json();
+    
+    if (!response.ok)
+        throw new Error(await response.text());
 };
 
 const updateAsync = async (id, eventLocationUpdate, jwtToken) => {
@@ -58,18 +68,9 @@ const updateAsync = async (id, eventLocationUpdate, jwtToken) => {
         },
         body: JSON.stringify(eventLocationUpdate)
     });
-
-    if (!response.ok) {
-        throw new Error(`Error updating event location: ${response.statusText}`);
-    }
-
-    // Some APIs return the updated entity, others return status only.
-    // Try to parse JSON; if empty, return null to signal success without payload.
-    try {
-        return await response.json();
-    } catch (_) {
-        return null;
-    }
+    
+    if (!response.ok)
+        throw new Error(await response.text());
 };
 
 const deleteAsync = async (id, jwtToken) => {
@@ -79,12 +80,20 @@ const deleteAsync = async (id, jwtToken) => {
             'Authorization': `Bearer ${jwtToken}`
         }
     });
-
-    if (!response.ok) {
-        throw new Error(`Error deleting event location: ${response.statusText}`);
+    let result;
+    
+    switch (response.status) {
+        case StatusCodes.OK:
+            result = true;
+            break;
+        case StatusCodes.NOT_FOUND:
+            result = false;
+            break;
+        default:
+            throw new Error(await response.text());
     }
 
-    return true;
+    return result;
 };
 
 export {

@@ -1,17 +1,18 @@
-import { useContext, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import { GlobalContext } from "../../context/GlobalContext";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import * as eventService from "../../services/event-service.js";
+import * as eventLocationService from "../../services/event-location-service.js";
+import useAuth from "../../hooks/useAuth.js";
 import Form from "../../components/Form";
 import TextInput from "../../components/UI/TextInput";
 import TextAreaInput from "../../components/UI/TextAreaInput";
 import NumberInput from "../../components/UI/NumberInput";
 import DateInput from "../../components/UI/DateInput";
-import EventLocationInput from "../../components/UI/EventLocationInput";
-import * as eventService from "../../services/event-service.js";
+// import EventLocationInput from "../../components/UI/EventLocationInput"; // replaced by modal-based solution
 import RedirectLogin from "../../components/RedirectLogin/index.jsx";
+import CreateEventLocationModal from "../../components/EventLocations/CreateEventLocationModal.jsx";
 
 export default function CreateEventPage() {
-    const { currentUser } = useContext(GlobalContext);
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -23,16 +24,41 @@ export default function CreateEventPage() {
         eventLocation: null,
         maxAttendees: null
     });
+    const { jwtToken, currentUser, validateSession } = useAuth();
+
+    // Event locations state (modal-based approach)
+    const [eventLocations, setEventLocations] = useState([]);
+    const [eventLocationsLoading, setEventLocationsLoading] = useState(false);
+    const [selectedEventLocationId, setSelectedEventLocationId] = useState("");
+    const [showCreateLocationModal, setShowCreateLocationModal] = useState(false);
+    const NEW_OPTION_VALUE = "__new__";
+
+    const fetchEventLocations = async () => {
+        if (!jwtToken) return;
+        try {
+            setEventLocationsLoading(true);
+            const data = await eventLocationService.getAllAsync(jwtToken);
+            setEventLocations(data || []);
+        } catch (err) {
+            console.error("Error fetching event locations", err);
+        } finally {
+            setEventLocationsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (currentUser) fetchEventLocations();
+    }, [currentUser, jwtToken]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         
         // Verificar que todos los campos requeridos estén válidos
-        const allValid = Object.values(validInputs).every(valid => valid === true);
+        /* const allValid = Object.values(validInputs).every(valid => valid === true);
         if (!allValid) {
             setError("Por favor, completa todos los campos correctamente.");
             return;
-        }
+        } */
 
         setLoading(true);
         setError(null);
@@ -49,14 +75,20 @@ export default function CreateEventPage() {
                 tags: formData.get("tags") ? formData.get("tags").split(",").map(tag => tag.trim()) : []
             };
 
-            const createdEvent = await eventService.createAsync(eventData);
+            const createdEvent = await eventService.createAsync(jwtToken, eventData);
             navigate(`/event/${createdEvent.id}`);
         } catch (error) {
-            console.error("Error creating event:", error);
-            setError("Error al crear el evento. Por favor, intenta de nuevo.");
+            if (validateSession(error)) {
+                console.error("Error creating event:", error);
+                setError(error.message);
+            }
         } finally {
             setLoading(false);
         }
+    };
+
+    const updateEventLocationValidity = (value) => {
+        setValidInputs(prev => ({ ...prev, eventLocation: !!value }));
     };
 
     return (
@@ -73,7 +105,7 @@ export default function CreateEventPage() {
                             <TextInput
                                 name="name"
                                 title="Nombre del evento"
-                                placeholder="Ej: Festival de Rock 2024"
+                                placeholder="Ej: Festival de Rock"
                                 validInputs={validInputs}
                                 setValidInputs={setValidInputs}
                                 required
@@ -110,13 +142,42 @@ export default function CreateEventPage() {
                                 </div>
                             </div>
 
-                            <EventLocationInput
-                                name="eventLocation"
-                                title="Ubicación del evento"
-                                validInputs={validInputs}
-                                setValidInputs={setValidInputs}
-                                required
-                            />
+                            {/* Selector con opción "+" */}
+                            <div className="form-group">
+                                <label className="form-label" htmlFor="eventLocation">Ubicación del evento <span className="text-error">*</span></label>
+                                <select
+                                    id="eventLocation"
+                                    name="eventLocation"
+                                    className="form-select"
+                                    required
+                                    disabled={eventLocationsLoading}
+                                    value={selectedEventLocationId}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (val === NEW_OPTION_VALUE) {
+                                            // Abrir modal y volver a dejar seleccionado valor previo (vacío si no había)
+                                            setShowCreateLocationModal(true);
+                                            // Reset a vacío para no marcar válido todavía
+                                            setSelectedEventLocationId("");
+                                            updateEventLocationValidity("");
+                                            return;
+                                        }
+                                        setSelectedEventLocationId(val);
+                                        updateEventLocationValidity(val);
+                                    }}
+                                >
+                                    <option value="">{eventLocationsLoading ? "Cargando ubicaciones..." : "Seleccioná una ubicación"}</option>
+                                    {eventLocations.map(loc => (
+                                        <option key={loc.id} value={loc.id}>
+                                            {loc.name} - {loc.full_address}
+                                        </option>
+                                    ))}
+                                    <option value={NEW_OPTION_VALUE}>➕ Crear nueva ubicación...</option>
+                                </select>
+                                {validInputs.eventLocation === false && (
+                                    <div className="form-input-hint text-error">Seleccioná una ubicación</div>
+                                )}
+                            </div>
 
                             <div className="columns">
                                 <div className="column col-6 col-md-12">
@@ -159,6 +220,20 @@ export default function CreateEventPage() {
                         </Form>
                     </div>
                 </div>
+                <CreateEventLocationModal
+                    isOpen={showCreateLocationModal}
+                    onClose={() => setShowCreateLocationModal(false)}
+                    onCreated={(created) => {
+                        // Refrescar lista y si hay creado seleccionarlo
+                        fetchEventLocations().then(() => {
+                            if (created?.id) {
+                                setSelectedEventLocationId(String(created.id));
+                                updateEventLocationValidity(created.id);
+                            }
+                            setShowCreateLocationModal(false);
+                        });
+                    }}
+                />
             </main>
         ) : (
             <RedirectLogin />

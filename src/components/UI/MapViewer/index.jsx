@@ -2,7 +2,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-export default function Map({ position, zoom=14, scrollWheelZoom=true, popup, width="100%", height="400px" }) {
+export default function MapViewer({ position, zoom=14, scrollWheelZoom=true, popup, width="100%", height="400px" }) {
     return (
         <MapContainer
             center={position}
