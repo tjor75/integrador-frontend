@@ -30,6 +30,7 @@ export default function EventPage() {
                 try {
                     const eventData = await eventService.getByIdAsync(id);
                     setEvent(eventData);
+                    console.log(eventData)
                 } catch (error) {
                     console.error("Error fetching event:", error);
                 } finally {
@@ -50,11 +51,9 @@ export default function EventPage() {
                         <div className="column col-8 col-md-12">
                             <EventDateSection event={event} />
                             <EventDescriptionCard description={event.description} />
-                            <div className="card mb-2">
-                                {event.event_location && (
-                                    <EventLocationCard event={event} />
-                                )}
-                            </div>
+                            {event.event_location.latitude && event.event_location.longitude && (
+                                <EventLocationCard event={event} />
+                            )}
                             {event.tags && event.tags.length > 0 && <EventTagsCard tags={event.tags} />}
                         </div>
                         

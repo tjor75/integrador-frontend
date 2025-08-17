@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import Modal from "../UI/Modal";
 import Form from "../Form";
 import TextInput from "../UI/TextInput";
@@ -7,16 +7,19 @@ import MapPicker from "../UI/MapPicker";
 import LocationSelector from "../UI/LocationSelector";
 import { GlobalContext } from "../../context/GlobalContext";
 import * as eventLocationService from "../../services/event-location-service.js";
+import useAuth from "../../hooks/useAuth.js"; // agregar para validateSession
 
 export default function CreateEventLocationModal({ isOpen, onClose, onCreated }) {
     const { jwtToken } = useContext(GlobalContext);
+    const { validateSession } = useAuth();
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [validInputs, setValidInputs] = useState({
         name: null,
         full_address: null,
         max_capacity: null,
-        latlng: true
+        latlng: true,
+        id_location: null
     });
     const [latlng, setLatlng] = useState(null);
     const [selectedLocation, setSelectedLocation] = useState(null);
@@ -25,7 +28,20 @@ export default function CreateEventLocationModal({ isOpen, onClose, onCreated })
         setError(null);
         setSelectedLocation(null);
         setLatlng(null);
+        setValidInputs({
+            name: null,
+            full_address: null,
+            max_capacity: null,
+            latlng: true,
+            id_location: null
+        });
     };
+
+    // limpiar al abrir/cerrar
+    useEffect(() => {
+        if (!isOpen) return; // al abrir
+        reset();
+    }, [isOpen]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -52,7 +68,7 @@ export default function CreateEventLocationModal({ isOpen, onClose, onCreated })
         setError(null);
         try {
             const created = await eventLocationService.createAsync(payload, jwtToken);
-            onCreated?.(created);
+            onCreated?.(created || payload); // si API no devuelve objeto, pasar payload
             reset();
             onClose?.();
         } catch (err) {
@@ -69,7 +85,7 @@ export default function CreateEventLocationModal({ isOpen, onClose, onCreated })
         <Modal
             isOpen={isOpen}
             title="Crear ubicación de evento"
-            onClose={() => { if (!loading) onClose?.(); }}
+            onClose={() => { if (!loading) { reset(); onClose?.(); } }}
             footer={
                 <div className="btn-group btn-group-block">
                     <button
@@ -80,7 +96,7 @@ export default function CreateEventLocationModal({ isOpen, onClose, onCreated })
                     >
                         Crear
                     </button>
-                    <button className="btn" onClick={onClose} disabled={loading}>Cancelar</button>
+                    <button className={loading ? "btn disabled" : "btn"} onClick={() => { if (!loading) { reset(); onClose?.(); } }} disabled={loading}>Cancelar</button>
                 </div>
             }
         >
@@ -116,6 +132,8 @@ export default function CreateEventLocationModal({ isOpen, onClose, onCreated })
                     required
                 />
                 <LocationSelector
+                    name="id_location"
+                    title="Localidad / Provincia"
                     value={selectedLocation}
                     onError={setError}
                     onChange={(loc) => {

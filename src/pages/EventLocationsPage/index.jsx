@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth.js";
 import * as eventLocationService from "../../services/event-location-service.js";
 import CreateEventLocationModal from "../../components/EventLocations/CreateEventLocationModal";
-import EditEventLocationModal from "../../components/EventLocations/EditEventLocationModal";
 import ViewEventLocationModal from "../../components/EventLocations/ViewEventLocationModal";
 import Loading from "../../components/UI/Loading";
 import RedirectLogin from "../../components/RedirectLogin";
@@ -14,7 +13,6 @@ export default function EventLocationsPage() {
     const [error, setError] = useState(null);
     const [items, setItems] = useState([]);
     const [showCreate, setShowCreate] = useState(false);
-    const [editTarget, setEditTarget] = useState(null);
     const [viewTarget, setViewTarget] = useState(null);
 
     const fetchItems = async () => {
@@ -98,7 +96,6 @@ export default function EventLocationsPage() {
                                         key={it.id}
                                         it={it}
                                         setViewTarget={setViewTarget}
-                                        setEditTarget={setEditTarget}
                                         handleDelete={handleDelete}
                                     />
                                 ))}
@@ -119,14 +116,6 @@ export default function EventLocationsPage() {
                         fetchItems();
                     }
                 }}
-            />
-
-            <EditEventLocationModal
-                isOpen={!!editTarget}
-                onClose={() => setEditTarget(null)}
-                id={editTarget?.id}
-                initialData={editTarget}
-                onUpdated={() => fetchItems()}
             />
 
             <ViewEventLocationModal

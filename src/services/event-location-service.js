@@ -57,6 +57,13 @@ const createAsync = async (eventLocation, jwtToken) => {
     
     if (!response.ok)
         throw new Error(await response.text());
+
+    // intentar parsear json si viene
+    try {
+        return await response.json();
+    } catch {
+        return null;
+    }
 };
 
 const updateAsync = async (id, eventLocationUpdate, jwtToken) => {

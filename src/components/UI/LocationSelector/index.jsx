@@ -3,7 +3,7 @@ import { getLocationsAsync } from "../../../services/event-location-service.js";
 
 export default function LocationSelector({
     name = "id_location",
-    title = "Localidad / Provincia",
+    title,
     placeholder = "Escribe para filtrar y seleccionar",
     validInputs,
     setValidInputs,
@@ -34,6 +34,14 @@ export default function LocationSelector({
             }
         })();
     }, []);
+
+    // Nuevo: sincronizar estado de validez cuando cambian value / required
+    useEffect(() => {
+        setValidInputs(prev => ({
+            ...prev,
+            [name]: value?.id ? true : !required // si no es required y está vacío => true
+        }));
+    }, [value?.id, required, name, setValidInputs]);
 
     // Sincronizar texto cuando cambie selección externa
     useEffect(() => {
@@ -83,7 +91,13 @@ export default function LocationSelector({
         setText(v);
         if (value) {
             onChange?.(null); // si edita, limpia selección
-            setValidInputs(prev => ({ ...prev, [name]: false }));
+            setValidInputs(prev => ({ ...prev, [name]: required ? false : true }));
+        } else if (v.trim() === "") {
+            // si borra todo
+            setValidInputs(prev => ({ ...prev, [name]: required ? false : true }));
+        } else {
+            // escribiendo algo pero aún no selecciona => inválido si required
+            if (required) setValidInputs(prev => ({ ...prev, [name]: false }));
         }
     };
 
@@ -91,10 +105,13 @@ export default function LocationSelector({
         onChange?.(item);
         setText(`${item.location_name} · ${item.province_name}`);
         setOpen(false);
+        setValidInputs(prev => ({ ...prev, [name]: true }));
     };
 
+    const invalid = validInputs?.[name] === false;
+
     return (
-        <div className="form-group">
+        <div className={"form-group" + (invalid ? " has-error" : "")}>
             <label className="form-label">
                 {title} {required && <span className="text-error">*</span>}
             </label>
@@ -112,11 +129,15 @@ export default function LocationSelector({
                 }}
                 disabled={disabled || loading}
                 autoComplete="off"
+                aria-required={required ? "true" : undefined} /* quitado required nativo */
+                aria-invalid={invalid ? "true" : undefined}
             />
             <input type="hidden" name={name} value={value?.id ?? ""} />
             {helperText && <p className="form-input-hint">{helperText}</p>}
-            {validInputs[name] === false && (
-                <p className="form-input-hint text-error">No se ha seleccionado una localizaci&oacute;n v&aacute;lida</p>
+            {invalid && (
+                <p className="form-input-hint text-error">
+                    {required ? "Debe seleccionar una localización válida" : "Valor inválido"}
+                </p>
             )}
             {open && filtered.length > 0 && (
                 <div

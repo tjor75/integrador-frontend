@@ -20,10 +20,11 @@ export default function CreateEventPage() {
         name: null,
         description: null,
         startDate: null,
-        duration: null,
         eventLocation: null,
-        maxAttendees: null
+        duration: true,       // opcional
+        maxAttendees: null    // ahora requerido
     });
+    const REQUIRED_FIELDS = ["name", "description", "startDate", "eventLocation", "maxAttendees"]; // max asistentes ahora requerido
     const { jwtToken, currentUser, validateSession } = useAuth();
 
     // Event locations state (modal-based approach)
@@ -52,31 +53,45 @@ export default function CreateEventPage() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        
-        // Verificar que todos los campos requeridos estén válidos
-        /* const allValid = Object.values(validInputs).every(valid => valid === true);
-        if (!allValid) {
-            setError("Por favor, completa todos los campos correctamente.");
-            return;
-        } */
 
+        // Calcular actualización de validez antes de setState
+        const updated = { ...validInputs };
+        for (const key of REQUIRED_FIELDS) {
+            if (key !== "eventLocation" && updated[key] === null) updated[key] = false;
+        }
+        // Validar select ubicación requerida
+        if (!selectedEventLocationId) updated.eventLocation = false; else updated.eventLocation = true;
+
+        // Aplicar cambios
+        setValidInputs(updated);
+
+        const currentValid = Object.values(updated).every(v => v === true);
+        if (!currentValid) {
+            setError("Por favor, completá todos los campos obligatorios correctamente.");
+            return;
+        }
+        
         setLoading(true);
         setError(null);
 
         try {
             const formData = new FormData(event.target);
             const eventData = {
-                name: formData.get("name"),
-                description: formData.get("description"),
+                name: formData.get("name")?.trim(),
+                description: formData.get("description")?.trim(),
                 start_date: formData.get("startDate"),
-                duration_minutes: parseInt(formData.get("duration")),
-                id_event_location: parseInt(formData.get("eventLocation")),
-                max_attendees: parseInt(formData.get("maxAttendees")) || null,
-                tags: formData.get("tags") ? formData.get("tags").split(",").map(tag => tag.trim()) : []
+                duration_in_minutes: formData.get("duration") ? parseInt(formData.get("duration")) : null,
+                id_event_location: parseInt(selectedEventLocationId),
+                max_assistance: formData.get("maxAttendees") ? parseInt(formData.get("maxAttendees")) : null,
+                price: formData.get("price") ? parseFloat(formData.get("price")) : 0,
+                tags: formData.get("tags") ? formData.get("tags").split(",").map(tag => tag.trim()).filter(Boolean) : [],
+                // IMPORTANT: backend espera '1' / '0' como string
+                enabled_for_enrollment: formData.get("enabled_for_enrollment") === "1" ? "1" : "0"
             };
 
             const createdEvent = await eventService.createAsync(jwtToken, eventData);
-            navigate(`/event/${createdEvent.id}`);
+            if (createdEvent?.id) navigate(`/event/${createdEvent.id}`);
+            else navigate("/events");
         } catch (error) {
             if (validateSession(error)) {
                 console.error("Error creating event:", error);
@@ -148,16 +163,13 @@ export default function CreateEventPage() {
                                 <select
                                     id="eventLocation"
                                     name="eventLocation"
-                                    className="form-select"
-                                    required
+                                    className={"form-select" + (validInputs.eventLocation === false ? " is-error" : "")}
                                     disabled={eventLocationsLoading}
                                     value={selectedEventLocationId}
                                     onChange={(e) => {
                                         const val = e.target.value;
                                         if (val === NEW_OPTION_VALUE) {
-                                            // Abrir modal y volver a dejar seleccionado valor previo (vacío si no había)
                                             setShowCreateLocationModal(true);
-                                            // Reset a vacío para no marcar válido todavía
                                             setSelectedEventLocationId("");
                                             updateEventLocationValidity("");
                                             return;
@@ -189,16 +201,46 @@ export default function CreateEventPage() {
                                         max={1000}
                                         validInputs={validInputs}
                                         setValidInputs={setValidInputs}
+                                        required
                                     />
                                 </div>
                                 <div className="column col-6 col-md-12">
-                                    <TextInput
-                                        name="tags"
-                                        title="Etiquetas (separadas por comas)"
-                                        placeholder="música, rock, festival, al aire libre"
+                                    <NumberInput
+                                        name="price"
+                                        title="Precio (pesos)"
+                                        placeholder="0"
+                                        min={0}
+                                        step={0.01}
                                         validInputs={validInputs}
                                         setValidInputs={setValidInputs}
                                     />
+                                </div>
+                            </div>
+
+                            <div className="form-group">
+                                <TextInput
+                                    name="tags"
+                                    title="Etiquetas (separadas por comas)"
+                                    placeholder="música, rock, festival, al aire libre"
+                                    validInputs={validInputs}
+                                    setValidInputs={setValidInputs}
+                                />
+                            </div>
+
+                            {/* Checkbox para enabled_for_enrollment */}
+                            <div className="form-group">
+                                <label className="form-checkbox">
+                                    <input
+                                        type="checkbox"
+                                        name="enabled_for_enrollment"
+                                        value="1"
+                                        defaultChecked={true}
+                                    />
+                                    <i className="form-icon"></i>
+                                    Habilitar inscripciones
+                                </label>
+                                <div className="form-input-hint">
+                                    Si está marcado, los usuarios podrán inscribirse al evento. Si no está marcado, las inscripciones estarán deshabilitadas.
                                 </div>
                             </div>
 

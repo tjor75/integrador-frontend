@@ -44,7 +44,7 @@ export default function MapPicker({ value, onChange, height = 300, zoom = 13 }) 
     return (
         <div>
             <div style={{ height, width: "100%", borderRadius: 6, overflow: "hidden" }}>
-                <MapContainer center={pos} zoom={zoom} style={{ height: "100%", width: "100%" }} scrollWheelZoom>
+                <MapContainer center={pos || DEFAULT_CENTER} zoom={zoom} style={{ height: "100%", width: "100%" }} scrollWheelZoom>
                     <TileLayer
                         attribution='&copy; OpenStreetMap'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -65,9 +65,11 @@ export default function MapPicker({ value, onChange, height = 300, zoom = 13 }) 
                     <RecenterOnChange position={pos} />
                 </MapContainer>
             </div>
-            <div className="text-small text-gray mt-1">
-                Lat: {pos.lat.toFixed(6)} | Lng: {pos.lng.toFixed(6)}
-            </div>
+            {pos && (
+                <div className="text-small text-gray mt-1">
+                    Lat: {pos.lat.toFixed(6)} | Lng: {pos.lng.toFixed(6)}
+                </div>
+            )}
         </div>
     );
 }

@@ -1,11 +1,28 @@
-import { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { GlobalContext } from "../../context/GlobalContext";
 import EventEnrollmentButton from "../EventEnrollmentButton";
+import useAuth from "../../hooks/useAuth.js";
+import * as eventService from "../../services/event-service.js";
 
 export default function EventEnrollmentCard({ event }) {
     const { currentUser } = useContext(GlobalContext);
+    const { jwtToken, validateSession } = useAuth();
+    const navigate = useNavigate();
     const enabledForEnrollment = event.enabled_for_enrollment === true || event.enabled_for_enrollment === "1" || event.enabled_for_enrollment === 1;
+
+    const handleDelete = async (eventId) => {
+        if (!window.confirm("¿Eliminar este evento?")) return;
+        
+        try {
+            await eventService.deleteAsync(eventId, jwtToken);
+            navigate("/events");
+        } catch (err) {
+            if (validateSession(err)) {
+                console.error("Error deleting event:", err);
+            }
+        }
+    };
 
     return (
         <section className={"card " + (enabledForEnrollment ? "bg-secondary" : "card bg-error") + " event-enrollment-card"}>
@@ -17,14 +34,14 @@ export default function EventEnrollmentCard({ event }) {
                     {
                         currentUser && currentUser.username === event.creator_user.username ? (
                             <>
-                                <NavLink className="btn">
+                                <Link className="btn" to={`/event/${event.id}/edit`}>
                                     <i className="icon icon-edit" />
                                     Editar
-                                </NavLink>
-                                <NavLink className="btn btn-error">
+                                </Link>
+                                <button className="btn btn-error" onClick={() => handleDelete(event.id)}>
                                     <i className="icon icon-delete" />
                                     Eliminar
-                                </NavLink>
+                                </button>
                             </>
                         ) : (
                             <EventEnrollmentButton
