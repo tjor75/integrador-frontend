@@ -1,9 +1,10 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { GlobalContext } from "../../context/GlobalContext";
-import EventEnrollmentButton from "../EventEnrollmentButton";
-import useAuth from "../../hooks/useAuth.js";
 import * as eventService from "../../services/event-service.js";
+import useAuth from "../../hooks/useAuth.js";
+import EventEnrollmentButton from "../EventEnrollmentButton";
+import "./EventEnrollment.css";
 
 export default function EventEnrollmentCard({ event }) {
     const { currentUser } = useContext(GlobalContext);
@@ -25,7 +26,7 @@ export default function EventEnrollmentCard({ event }) {
     };
 
     return (
-        <section className={"card " + (enabledForEnrollment ? "bg-secondary" : "card bg-error") + " event-enrollment-card"}>
+        <section className={"card " + (enabledForEnrollment ? "bg-secondary" : "bg-error") + " event-enrollment-card"}>
             <div className="card-body">
                 <p className="h3">{event.price === 0 ? "Gratis" : `$${event.price}`}</p>
             </div>
