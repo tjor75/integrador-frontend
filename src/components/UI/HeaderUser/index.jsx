@@ -21,11 +21,6 @@ export default function HeaderUser() {
                 <li className="menu-item">{currentUser?.username}</li>
                 <li className="divider" />
                 <li className="menu-item">
-                    <NavLink to="/event/new" className="menu-link">
-                        <i className="icon icon-time" /> Nuevo evento
-                    </NavLink>
-                </li>
-                <li className="menu-item">
                     <a className="text-error" onClick={handleLogout} disabled={loggingOut} href="#">
                         {loggingOut ? (
                             <>

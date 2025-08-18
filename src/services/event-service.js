@@ -50,8 +50,8 @@ export const createAsync = async (jwtToken, entity) => {
         throw new Error(await response.text());
 };
 
-export const updateAsync = async (id, jwtToken, entity) => {
-    const response = await fetch(`${API_BASE_URL}/api/event/${id}`, {
+export const updateAsync = async (jwtToken, entity) => {
+    const response = await fetch(`${API_BASE_URL}/api/event`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',

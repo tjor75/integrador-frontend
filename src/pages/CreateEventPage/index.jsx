@@ -8,7 +8,6 @@ import TextInput from "../../components/UI/TextInput";
 import TextAreaInput from "../../components/UI/TextAreaInput";
 import NumberInput from "../../components/UI/NumberInput";
 import DateInput from "../../components/UI/DateInput";
-// import EventLocationInput from "../../components/UI/EventLocationInput"; // replaced by modal-based solution
 import RedirectLogin from "../../components/RedirectLogin/index.jsx";
 import CreateEventLocationModal from "../../components/EventLocations/CreateEventLocationModal.jsx";
 
@@ -21,7 +20,7 @@ export default function CreateEventPage() {
         description: null,
         startDate: null,
         eventLocation: null,
-        duration: true,       // opcional
+        duration: null,       // opcional
         maxAttendees: null    // ahora requerido
     });
     const REQUIRED_FIELDS = ["name", "description", "startDate", "eventLocation", "maxAttendees"]; // max asistentes ahora requerido
@@ -41,7 +40,9 @@ export default function CreateEventPage() {
             const data = await eventLocationService.getAllAsync(jwtToken);
             setEventLocations(data || []);
         } catch (err) {
-            console.error("Error fetching event locations", err);
+            if (validateSession(err)) {
+                console.error("Error fetching event locations", err);
+            }
         } finally {
             setEventLocationsLoading(false);
         }
@@ -266,14 +267,16 @@ export default function CreateEventPage() {
                     isOpen={showCreateLocationModal}
                     onClose={() => setShowCreateLocationModal(false)}
                     onCreated={(created) => {
-                        // Refrescar lista y si hay creado seleccionarlo
-                        fetchEventLocations().then(() => {
-                            if (created?.id) {
-                                setSelectedEventLocationId(String(created.id));
-                                updateEventLocationValidity(created.id);
-                            }
-                            setShowCreateLocationModal(false);
-                        });
+                        if (created?.id) {
+                            // 1. Añadir la nueva ubicación a la lista existente y seleccionarla.
+                            setEventLocations(prev => [...prev, created]);
+                            setSelectedEventLocationId(String(created.id));
+                            updateEventLocationValidity(created.id);
+                        }
+                        // 2. Cerrar el modal inmediatamente.
+                        setShowCreateLocationModal(false);
+                        // 3. Refrescar la lista completa desde el servidor en segundo plano.
+                        fetchEventLocations();
                     }}
                 />
             </main>

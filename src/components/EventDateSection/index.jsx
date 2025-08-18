@@ -13,8 +13,6 @@ export default function EventDateSection({ event }) {
                 {event.start_date && (
                     <>
                         {formatDateTime(event.start_date).date}
-                        <br />
-                        <strong>{formatDateTime(event.start_date).time}</strong>
                         {event.duration_in_minutes && (
                             <span className="label label-rounded label-secondary ml-2">
                                 {formatDuration(parseInt(event.duration_in_minutes))}

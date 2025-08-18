@@ -74,7 +74,7 @@ export default function EventEnrollmentButton({ event, enabledForEnrollment }) {
             <button
                 className={enrollmentStatus ? "btn btn-secondary" : "btn btn-primary"}
                 onClick={enrollmentStatus ? unenroll : enroll}
-                disabled={!enabledForEnrollment}
+                disabled={!(enabledForEnrollment || enrollmentStatus)}
             >
                 {enrollmentStatus ? "Desinscribirse" : "Inscribirse"}
             </button>

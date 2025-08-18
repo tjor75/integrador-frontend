@@ -55,7 +55,9 @@ export default function EditEventPage() {
             const data = await eventLocationService.getAllAsync(jwtToken);
             setEventLocations(data || []);
         } catch (err) {
-            console.error("Error fetching event locations", err);
+            if (validateSession(err)) {
+                console.error("Error fetching event locations", err);
+            }
         } finally {
             setEventLocationsLoading(false);
         }
@@ -77,7 +79,7 @@ export default function EditEventPage() {
                 description: event.description || "",
                 startDate: event.start_date ? new Date(event.start_date).toISOString().split('T')[0] : "",
                 duration: event.duration_in_minutes ? event.duration_in_minutes.toString() : "",
-                eventLocation: event.id_event_location ? event.id_event_location.toString() : "",
+                eventLocation: event.event_location.id ? event.event_location.id.toString() : "",
                 maxAttendees: event.max_assistance ? event.max_assistance.toString() : "",
                 price: event.price ? event.price.toString() : "0",
                 tags: event.tags ? event.tags.join(", ") : "",
@@ -86,6 +88,7 @@ export default function EditEventPage() {
 
             setEventData(formattedData);
             setSelectedEventLocationId(formattedData.eventLocation);
+
             
             // Set initial validation state
             setValidInputs({
@@ -106,21 +109,15 @@ export default function EditEventPage() {
 
     useEffect(() => {
         if (currentUser) {
-            fetchEventLocations();
-            fetchEventData();
+            const loadData = async () => {
+                // 1. Cargar primero los datos del evento para saber qué ubicación está seleccionada
+                await fetchEventData();
+                // 2. Luego, cargar todas las ubicaciones disponibles
+                await fetchEventLocations();
+            };
+            loadData();
         }
     }, [currentUser, jwtToken, id]);
-
-    useEffect(() => {
-        // cuando cambian las locations y ya tenemos el eventData, aseguramos selección
-        if (!initialLoading && eventData.eventLocation && eventLocations.length > 0) {
-            const exists = eventLocations.some(l => String(l.id) === String(eventData.eventLocation));
-            if (exists && selectedEventLocationId !== eventData.eventLocation) {
-                setSelectedEventLocationId(eventData.eventLocation);
-                updateEventLocationValidity(eventData.eventLocation);
-            }
-        }
-    }, [initialLoading, eventData.eventLocation, eventLocations, selectedEventLocationId]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -148,6 +145,7 @@ export default function EditEventPage() {
         try {
             const formData = new FormData(event.target);
             const updateData = {
+                id,
                 name: formData.get("name")?.trim(),
                 description: formData.get("description")?.trim(),
                 start_date: formData.get("startDate"),
@@ -159,7 +157,7 @@ export default function EditEventPage() {
                 enabled_for_enrollment: formData.get("enabled_for_enrollment") === "1" ? "1" : "0"
             };
 
-            await eventService.updateAsync(id, jwtToken, updateData);
+            await eventService.updateAsync(jwtToken, updateData);
             navigate(`/event/${id}`);
         } catch (error) {
             if (validateSession(error)) {
@@ -258,9 +256,7 @@ export default function EditEventPage() {
                                         const val = e.target.value;
                                         if (val === NEW_OPTION_VALUE) {
                                             setShowCreateLocationModal(true);
-                                            setSelectedEventLocationId("");
-                                            updateEventLocationValidity("");
-                                            return;
+                                            return; // No limpiar la selección para evitar el "salto"
                                         }
                                         setSelectedEventLocationId(val);
                                         updateEventLocationValidity(val);

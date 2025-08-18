@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+
 export default function NumberInput({ 
     name, 
     title, 
@@ -7,31 +9,41 @@ export default function NumberInput({
     required = false,
     defaultValue = "",
     min,
-    max
+    max,
+    value,              // nuevo: permite modo controlado
+    onValueChange       // nuevo: callback al cambiar
 }) {
-    const validateNumber = (value) => {
+    // estado interno solo si no es controlado
+    const [internalValue, setInternalValue] = useState(defaultValue);
+
+    // Si cambia defaultValue y el componente NO es controlado, sincronizar
+    useEffect(() => {
+        if (value === undefined) {
+            setInternalValue(defaultValue);
+        }
+    }, [defaultValue, value]);
+
+    const currentValue = value !== undefined ? value : internalValue;
+
+    const validateNumber = (val) => {
         let isValid = true;
-        
-        if (required && value === "") {
+        if (required && val === "") {
             isValid = false;
-        } else if (value !== "") {
-            const numValue = parseInt(value);
+        } else if (val !== "") {
+            const numValue = parseInt(val);
             if (isNaN(numValue) || (min !== undefined && numValue < min) || (max !== undefined && numValue > max)) {
                 isValid = false;
             }
         }
-        
-        setValidInputs(prevValidInputs => {
-            const newValidInputs = { ...prevValidInputs };
-            newValidInputs[name] = isValid;
-            return newValidInputs;
-        });
+        setValidInputs(prevValidInputs => ({ ...prevValidInputs, [name]: isValid }));
         return isValid;
     };
 
-    const handleNumberChange = async (event) => {
-        const value = event.target.value;
-        validateNumber(value);
+    const handleNumberChange = (event) => {
+        const val = event.target.value;
+        validateNumber(val);
+        if (value === undefined) setInternalValue(val); // sólo en modo no controlado
+        if (onValueChange) onValueChange(val);
     };
     
     const getErrorMessage = () => {
@@ -56,7 +68,7 @@ export default function NumberInput({
                 id={name}
                 name={name}
                 placeholder={placeholder}
-                defaultValue={defaultValue}
+                value={currentValue}
                 min={min}
                 max={max}
                 onChange={handleNumberChange}
