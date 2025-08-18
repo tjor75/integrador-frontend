@@ -48,7 +48,7 @@ export default function EventPage() {
                     <div className="columns mt-2">
                         <div className="column col-8 col-md-12">
                             <EventDateSection event={event} />
-                            <EventDescriptionCard description={event.description} />
+                            {event.description && event.description.length > 0 && <EventDescriptionCard description={event.description} />}
                             <EventLocationCard event={event} />
                             {event.tags && event.tags.length > 0 && <EventTagsCard tags={event.tags} />}
                         </div>

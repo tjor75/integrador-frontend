@@ -133,7 +133,6 @@ export default function CreateEventPage() {
                                 placeholder="Describe tu evento. ¿Qué harás? ¿Por qué deberían asistir?"
                                 validInputs={validInputs}
                                 setValidInputs={setValidInputs}
-                                required
                             />
 
                             <div className="columns">

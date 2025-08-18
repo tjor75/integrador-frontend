@@ -216,7 +216,6 @@ export default function EditEventPage() {
                                 validInputs={validInputs}
                                 setValidInputs={setValidInputs}
                                 min={3}
-                                required
                                 defaultValue={eventData.description}
                             />
 
