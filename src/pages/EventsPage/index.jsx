@@ -82,10 +82,8 @@ export default function EventsPage() {
         <main className="container">
             {/* Error Toast */}
             {error && (
-                <div className="toast toast-error">
-                    <button className="btn btn-clear float-right" onClick={() => setError(null)}></button>
-                    <i className="icon icon-stop"></i>
-                    <strong>Error:</strong> {error.message}
+                <div className="bg-error text-center">
+                    <b>Error:</b> {error}
                 </div>
             )}
             
