@@ -20,10 +20,10 @@ export default function CreateEventPage() {
         description: null,
         startDate: null,
         eventLocation: null,
-        duration: null,       // opcional
-        maxAttendees: null    // ahora requerido
+        duration: null,
+        maxAttendees: null
     });
-    const REQUIRED_FIELDS = ["name", "description", "startDate", "eventLocation", "maxAttendees"]; // max asistentes ahora requerido
+    const REQUIRED_FIELDS = ["name", "description", "startDate", "eventLocation", "maxAttendees", "duration"]; // duración ahora requerida
     const { jwtToken, currentUser, validateSession } = useAuth();
 
     // Event locations state (modal-based approach)
@@ -154,6 +154,7 @@ export default function CreateEventPage() {
                                         min={1}
                                         validInputs={validInputs}
                                         setValidInputs={setValidInputs}
+                                        required
                                     />
                                 </div>
                             </div>
@@ -209,7 +210,7 @@ export default function CreateEventPage() {
                                     <NumberInput
                                         name="price"
                                         title="Precio (pesos)"
-                                        placeholder="0"
+                                        placeholder="0 (gratis)"
                                         min={0}
                                         step={0.01}
                                         validInputs={validInputs}

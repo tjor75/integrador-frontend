@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getSerialOrDefault } from "../../helpers/validator-helper";
 import * as eventService from "../../services/event-service.js";
 import NoEncontradoPage from "../NoEncontradoPage";
 import SpinnerPage from "../SpinnerPage";
@@ -30,7 +29,6 @@ export default function EventPage() {
                 try {
                     const eventData = await eventService.getByIdAsync(id);
                     setEvent(eventData);
-                    console.log(eventData)
                 } catch (error) {
                     console.error("Error fetching event:", error);
                 } finally {

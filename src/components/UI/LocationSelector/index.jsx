@@ -35,12 +35,14 @@ export default function LocationSelector({
         })();
     }, []);
 
-    // Nuevo: sincronizar estado de validez cuando cambian value / required
+    // Sincronizar estado de validez: marcar true cuando hay selección; no marcar false automáticamente al montar
     useEffect(() => {
-        setValidInputs(prev => ({
-            ...prev,
-            [name]: value?.id ? true : !required // si no es required y está vacío => true
-        }));
+        if (value?.id) {
+            setValidInputs(prev => ({ ...prev, [name]: true }));
+        } else if (!required) {
+            setValidInputs(prev => ({ ...prev, [name]: true }));
+        }
+        // Si es requerido y no hay valor, conservar el estado previo (null/prev) para no mostrar error por defecto
     }, [value?.id, required, name, setValidInputs]);
 
     // Sincronizar texto cuando cambie selección externa

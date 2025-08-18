@@ -63,7 +63,7 @@ export default function CreateEventLocationModal({ isOpen, onClose, onCreated })
             latitude: latlng?.lat ?? null,
             longitude: latlng?.lng ?? null
         };
-        console.log("Payload to create event location:", payload);
+
         setLoading(true);
         setError(null);
         try {
