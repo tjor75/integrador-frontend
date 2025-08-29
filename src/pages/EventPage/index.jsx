@@ -53,14 +53,12 @@ export default function EventPage() {
                     <div className="columns mt-2">
                         <div className="column col-8 col-md-12">
                             <EventDateSection event={event} />
-                            <EventDescriptionCard description={event.description} />
-                            {event.event_location.latitude && event.event_location.longitude && (
-                                <EventLocationCard event={event} />
-                            )}
+                            {event.description && event.description.length > 0 && <EventDescriptionCard description={event.description} />}
+                            <EventLocationCard event={event} />
                             {event.tags && event.tags.length > 0 && <EventTagsCard tags={event.tags} />}
                         </div>
                         
-                        <div className="column col-4 col-md-12">
+                        <div className="column col-4 col-md-12 event-enrollment-column">
                             <div className="mb-2">
                                 <EventEnrollmentCard event={event} />
                                 <EventAddToCalendarSection event={event} />

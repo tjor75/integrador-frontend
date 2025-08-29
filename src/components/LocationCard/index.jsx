@@ -1,6 +1,13 @@
 import MapViewer from "../UI/MapViewer";
 
 export default function LocationCard({ event }) {
+    const latitude  = event.event_location.latitude ??
+                      event.event_location.location.latitude ??
+                      event.event_location.location.province.latitude;
+    const longitude = event.event_location.longitude ??
+                      event.event_location.location.longitude ??
+                      event.event_location.location.province.longitude;
+
     return (
         <div className="card date-place-card">
             <div className="card-header">
@@ -10,18 +17,20 @@ export default function LocationCard({ event }) {
                 </div>
             </div>
             <div className="card-body">
-                <a href={`https://www.openstreetmap.org/search?lat=${event.event_location.latitude}&lon=${event.event_location.longitude}&zoom=18`}>
+                <a href={`https://www.openstreetmap.org/search?query=${encodeURIComponent(event.event_location.full_address)}`}>
                     {event.event_location.full_address}
                 </a>
             </div>
-            <div className="card-image">
-                <MapViewer
-                    position={[event.event_location.latitude, event.event_location.longitude]}
-                    name={event.event_location.name}
-                    zoom={18}
-                    popup={<b>{event.event_location.name}</b>}
-                />
-            </div>
+            {latitude && longitude && (
+                <div className="card-image">
+                    <MapViewer
+                        position={[latitude, longitude]}
+                        name={event.event_location.name}
+                        zoom={18}
+                        popup={<b>{event.event_location.name}</b>}
+                    />
+                </div>
+            )}
         </div>
     );
 }

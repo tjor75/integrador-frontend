@@ -38,8 +38,6 @@ export default function EventCard({ event }) {
     const status = getEventStatus();
     const priceLabel = formatPrice(event.price);
     const locationName = event.event_location?.name || event.location?.name;
-    const enrolledCount = (event.enrolled_users?.length ?? event.enrolled_count ?? 0);
-    const maxSeats = (event.max_assistance ?? event.max_attendees ?? null);
     const tags = Array.isArray(event.tags)
         ? (typeof event.tags[0] === 'string' ? event.tags : event.tags.map(t => t.name))
         : [];
@@ -103,17 +101,6 @@ export default function EventCard({ event }) {
                                 </div>
                             </div>
                         )}
-                    </div>
-                    
-                    <div className="columns">
-                        <div className="column col-6 col-sm-12">
-                            <div className="event-info">
-                                <i className="icon icon-people text-primary"></i>
-                                <span className="text-small">
-                                    {maxSeats ? `${enrolledCount}/${maxSeats}` : "Sin límite"}
-                                </span>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 

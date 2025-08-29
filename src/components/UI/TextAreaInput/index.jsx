@@ -4,6 +4,7 @@ export default function TextAreaInput({
     placeholder,
     validInputs,
     setValidInputs,
+    defaultValue = "",
     min = 3,
     required = false
 }) {
@@ -32,6 +33,7 @@ export default function TextAreaInput({
                 id={name}
                 name={name}
                 placeholder={placeholder}
+                defaultValue={defaultValue}
                 onChange={handleTextChange} />
             {validInputs[name] === false && (
                 <p className="form-input-hint text-error">

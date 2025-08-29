@@ -18,7 +18,7 @@ export default function Form({ className, title=null, error, onSubmit, setValidI
         <form className={className} onSubmit={handleSubmit} {...rest}>
             {title && <h1>{title}</h1>}
             {error && (
-                <div className="toast toast-error text-center">
+                <div className="bg-error text-center">
                     <b>Error:</b> {error}
                 </div>
             )}

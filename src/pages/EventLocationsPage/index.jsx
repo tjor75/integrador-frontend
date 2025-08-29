@@ -66,7 +66,7 @@ export default function EventLocationsPage() {
                     </div>
 
                     {error && (
-                        <div className="toast toast-error mb-2">
+                        <div className="bg-error text-center">
                             <b>Error:</b> {error}
                         </div>
                     )}

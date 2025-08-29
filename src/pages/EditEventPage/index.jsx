@@ -82,7 +82,7 @@ export default function EditEventPage() {
                 eventLocation: event.event_location.id ? event.event_location.id.toString() : "",
                 maxAttendees: event.max_assistance ? event.max_assistance.toString() : "",
                 price: event.price ? event.price.toString() : "0",
-                tags: event.tags ? event.tags.join(", ") : "",
+                tags: event.tags ? event.tags.map(tag => tag.name).join(", ") : "",
                 enabled_for_enrollment: event.enabled_for_enrollment ? "1" : "0"
             };
 
@@ -215,7 +215,7 @@ export default function EditEventPage() {
                                 placeholder="Describe tu evento. ¿Qué harás? ¿Por qué deberían asistir?"
                                 validInputs={validInputs}
                                 setValidInputs={setValidInputs}
-                                required
+                                min={3}
                                 defaultValue={eventData.description}
                             />
 
@@ -239,6 +239,7 @@ export default function EditEventPage() {
                                         validInputs={validInputs}
                                         setValidInputs={setValidInputs}
                                         defaultValue={eventData.duration}
+                                        required
                                     />
                                 </div>
                             </div>
@@ -293,7 +294,7 @@ export default function EditEventPage() {
                                     <NumberInput
                                         name="price"
                                         title="Precio (pesos)"
-                                        placeholder="0"
+                                        placeholder="0 (gratis)"
                                         min={0}
                                         step={0.01}
                                         validInputs={validInputs}
