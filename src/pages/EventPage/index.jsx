@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getSerialOrDefault } from "../../helpers/validator-helper";
 import * as eventService from "../../services/event-service.js";
+import { GlobalContext } from "../../context/GlobalContext.jsx";
 import NoEncontradoPage from "../NoEncontradoPage";
 import SpinnerPage from "../SpinnerPage";
 
@@ -13,11 +13,12 @@ import EventDateSection from "../../components/EventDateSection";
 import EventLocationCard from "../../components/LocationCard";
 import EventTagsCard from "../../components/EventTagsCard";
 
-import "./EventPage.css";
 import EventAddToCalendarSection from "../../components/EventAddToCalendarSection/index.jsx";
+import "./EventPage.css";
 
 
 export default function EventPage() {
+    const { setTitle } = useContext(GlobalContext);
     const params = useParams();
     const id = params.id;
     const [event, setEvent] = useState(null);
@@ -25,12 +26,14 @@ export default function EventPage() {
 
     useEffect(() => {
         const fetchEvent = async () => {
+            setTitle("Cargando...");
+
             if (id) {
                 setLoading(true);
                 try {
                     const eventData = await eventService.getByIdAsync(id);
                     setEvent(eventData);
-                    console.log(eventData)
+                    setTitle(eventData.name);
                 } catch (error) {
                     console.error("Error fetching event:", error);
                 } finally {

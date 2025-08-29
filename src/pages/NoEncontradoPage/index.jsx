@@ -1,7 +1,15 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { GlobalContext } from "../../context/GlobalContext";
 import FullPageError from "../../components/UI/FullPageError";
 
 export default function NoEncontradoPage() {
+    const { setTitle } = useContext(GlobalContext);
+
+    useEffect(() => {
+        setTitle("Página no encontrada");
+    }, []);
+
     return (
         <main>
             <FullPageError title="404">

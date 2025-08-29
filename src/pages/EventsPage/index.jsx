@@ -1,15 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useSearchParams } from "react-router-dom";
 import { API_PAGE_LIMIT } from "../../config/api-config.js";
 import * as eventService from "../../services/event-service.js";
+import { GlobalContext } from "../../context/GlobalContext.jsx";
 import EventList from "../../components/EventList";
 import EventListSkeleton from "../../components/EventListSkeleton";
 import SearchBar from "../../components/SearchBar";
 import GoUpButton from "../../components/UI/GoUpButton";
-import Loading from "../../components/UI/Loading";
-import EmptyEventList from "../../components/UI/EmptyEventList/index.jsx";
 
 export default function EventsPage() {
+    const { setTitle } = useContext(GlobalContext);
     const [searchParams] = useSearchParams();
 
     const [filters, setFilters] = useState({});
@@ -70,13 +70,8 @@ export default function EventsPage() {
         setError(null);
         setHasMoreEvents(true);
         fetchNewEvents(filters, true);
+        setTitle("Eventos");
     }, [searchParams]);
-
-    /*useEffect(() => {
-        if (events.length > 0) {
-            setStats(calculateStats(events));
-        }
-    }, [events]);*/
 
     return (
         <main className="container">

@@ -7,32 +7,34 @@ import Loading from "../../components/UI/Loading";
 import "./HomePage.css";
 
 export default function HomePage() {
-    const { currentUser } = useContext(GlobalContext);
+    const { currentUser, setTitle } = useContext(GlobalContext);
     const navigate = useNavigate();
     const [featuredEvents, setFeaturedEvents] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        window.onscroll = () => {
+        setTitle("Eventos para hacer");
+
+        /* window.onscroll = () => {
             const header = document.querySelector(".navbar");
             if (window.scrollY > 50) {
                 header.classList.add("scrolled");
             } else {
                 header.classList.remove("scrolled");
             }
-        };
+        }; */
     }, []);
 
     useEffect(() => {
         // Si el usuario está logueado, redirigir a eventos
         if (currentUser) {
-            navigate('/events');
+            navigate("/events");
             return;
         }
 
         // Cargar eventos destacados para usuarios no logueados
         fetchFeaturedEvents();
-    }, [currentUser, navigate]);
+    }, [currentUser]);
 
     const fetchFeaturedEvents = async () => {
         try {

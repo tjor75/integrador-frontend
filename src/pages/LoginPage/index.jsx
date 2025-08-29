@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { GlobalContext } from "../../context/GlobalContext";
 import AuthForm from "../../components/AuthForm";
@@ -7,7 +7,7 @@ import PasswordInput from "../../components/UI/PasswordInput";
 import useAuth from "../../hooks/useAuth";
 
 export default function LoginPage() {
-    const { currentUser } = useContext(GlobalContext);
+    const { currentUser, setTitle } = useContext(GlobalContext);
     const [searchParams] = useSearchParams();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -17,6 +17,10 @@ export default function LoginPage() {
     });
     const navigate = useNavigate();
     const { login } = useAuth();
+
+    useEffect(() => {
+        setTitle("Ingresar");
+    }, [setTitle]);
 
     const getRedirectTo = () => {
         const raw = searchParams.get("redirect_to");

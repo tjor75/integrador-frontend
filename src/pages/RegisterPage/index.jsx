@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, Navigate, useSearchParams, useNavigate } from "react-router-dom";
 import { GlobalContext } from "../../context/GlobalContext";
 import * as userService from "../../services/user-service.js";
@@ -10,7 +10,7 @@ import { getEmailOrDefault } from "../../helpers/validator-helper.js";
 import useAuth from "../../hooks/useAuth";
 
 export default function RegisterPage() {
-    const { currentUser } = useContext(GlobalContext);
+    const { currentUser, setTitle } = useContext(GlobalContext);
     const [searchParams] = useSearchParams();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -22,6 +22,10 @@ export default function RegisterPage() {
     });
     const { login } = useAuth();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setTitle("Registrar");
+    }, []);
 
     const getRedirectTo = () => {
         const raw = searchParams.get("redirect_to");
